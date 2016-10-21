@@ -2,7 +2,10 @@
 
 '''
 
-here for some discrition about this codes
+enot project main function
+
+configure parameters -> config.py
+global variables     -> lib/global_vars.py
 
 '''
 
@@ -12,6 +15,7 @@ here for some discrition about this codes
 
 if __name__ == '__main__':
 # call function by executing order
+
 
 # read input first
 
