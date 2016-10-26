@@ -10,6 +10,10 @@ dedicated for clustering using "random walker" or "Map Equation".
 :banana:
 
 -------
+#dependency
+*scipy
+*numpy
+
 ##supported python version = 3.5.2
 we suggest to use pyenv for switching your python version.
 
