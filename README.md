@@ -10,7 +10,7 @@ dedicated for clustering using "random walker" or "Map Equation".
 :banana:
 
 -------
-#Requirements:  
+#Requirements:
 *scipy  
 *numpy  
 
