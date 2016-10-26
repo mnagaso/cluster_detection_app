@@ -27,4 +27,4 @@ $source ~/.bash_profile
 (or $source ~/.bashrc)
 
 ##switch your python version
-pyenv install 3.5.2
+$pyenv install 3.5.2
