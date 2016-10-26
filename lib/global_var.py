@@ -6,3 +6,5 @@ global variables' definitions here
 
 '''
 
+total_nodes = 0
+
