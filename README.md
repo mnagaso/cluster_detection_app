@@ -29,8 +29,8 @@ reload your .bash_profile (or bashrc)
 install python version 3.5.2  
 `$pyenv install 3.5.2`
 
-switch your python version
+switch your python version  
 `$pyenv global 3.5.2`
 
-you may verify the version now using
+you may verify the version now using  
 `$pyenv versions`
