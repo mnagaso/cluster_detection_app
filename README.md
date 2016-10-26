@@ -18,8 +18,8 @@ installation
 
 write pathes on ~/.bash_profile or .bashrc
 add three lines by using your favorite text editor
-`export PYENV_ROOT=$HOME/.pyenv`
-`export PATH=$PYENV_ROOT/bin:$PATH`
+`export PYENV_ROOT=$HOME/.pyenv`  
+`export PATH=$PYENV_ROOT/bin:$PATH`  
 `eval "$(pyenv init -)"`
 
 reload your .bash_profile (or bashrc)
