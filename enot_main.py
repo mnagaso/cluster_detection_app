@@ -29,5 +29,6 @@ if __name__ == '__main__':
     # search algorithm for hierarchical mapping starts from here
 
     # output 
-
+    import csv_export
+    csv_export.export_csv()
     # visualize
