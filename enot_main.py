@@ -22,12 +22,12 @@ if __name__ == '__main__':
     # read input first
     import csv_import as csim
     csim.read_csv()
-# initialize
-## calculate p_alpha
-## 
 
-# search algorithm for hierarchical mapping starts from here
+    # calculate p_alpha
+    # 
 
-# output 
+    # search algorithm for hierarchical mapping starts from here
 
-# visualize
+    # output 
+
+    # visualize
