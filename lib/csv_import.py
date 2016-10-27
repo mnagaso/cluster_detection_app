@@ -31,3 +31,7 @@ def read_csv():
         #print (ff, tt, ww)
         gv.W[ff,tt] = ww
 
+        ## this line is for mimicing undirected input to directed network
+        ## by assuming Wij = Wji
+        ## TODO should be modified when appropriate input data will be found
+        gv.W[tt,ff] = ww
