@@ -24,7 +24,8 @@ if __name__ == '__main__':
     csim.read_csv()
 
     # calculate p_alpha
-    # 
+    import calc_p_alpha as cp
+    cp.calc_main()
 
     # search algorithm for hierarchical mapping starts from here
 
