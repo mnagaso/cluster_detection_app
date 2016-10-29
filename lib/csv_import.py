@@ -20,9 +20,7 @@ def get_w_from_csv(infile_path, directed_type, number_of_all_nodes):
     w = lil_matrix((number_of_all_nodes+1, number_of_all_nodes+1))
     for line in csv_reader:
         # input format
-        # l(ink)_start l_goal weight
         node_id_from, node_id_to, weight = map(int, line)
-        #print (ff, tt, ww)
         w[node_id_from,node_id_to] = weight
 
         ## this line is for mimicing undirected input to directed network

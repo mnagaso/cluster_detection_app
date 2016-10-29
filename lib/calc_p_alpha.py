@@ -19,12 +19,13 @@ def arnoldi():
 
     pass
 
-def init_transient_matrix():
+def init_transient_matrix(w):
     
-    pass
+    return t
 
 def calc_main():
     # test modify global matrix
     gv.W = gv.W*100
 
     # prepare transient matrix T (lambiotte 2012 eq.)
+    #T = init_transient_matrix(gv.W)

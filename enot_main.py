@@ -20,9 +20,9 @@ import config as cf
 if __name__ == '__main__':
 # call function by executing order
     #initialize
-    import global_var
+    #import global_var
 
-    # read input first
+    # read input and get W (link-weight matrix, lambiotte 2012)
     import csv_import as csim
     gv.W = csim.get_w_from_csv(cf.infile_path, cf.infile_directed_type, cf.total_nodes)
 
@@ -35,4 +35,8 @@ if __name__ == '__main__':
     # output 
     import csv_export
     csv_export.export_csv()
+
     # visualize
+    import visualize_tools as vt
+    # show W matrix for debug
+    vt.show_matrix(gv.W)
