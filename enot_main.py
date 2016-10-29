@@ -14,6 +14,7 @@ global variables     -> lib/global_vars.py
 import sys
 sys.path.append('./lib')
 
+import global_var as gv
 import config as cf
 
 if __name__ == '__main__':
@@ -23,7 +24,7 @@ if __name__ == '__main__':
 
     # read input first
     import csv_import as csim
-    csim.read_csv(cf.infile_path, cf.infile_directed_type)
+    gv.W = csim.get_w_from_csv(cf.infile_path, cf.infile_directed_type, cf.total_nodes)
 
     # calculate p_alpha
     import calc_p_alpha as cp
