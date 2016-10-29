@@ -27,11 +27,11 @@ def read_csv():
     for line in csv_reader:
         # input format
         # l(ink)_start l_goal weight
-        ff, tt, ww = map(int, line)
+        node_id_from, node_id_to, weight = map(int, line)
         #print (ff, tt, ww)
-        gv.W[ff,tt] = ww
+        gv.W[node_id_from,node_id_to] = weight
 
         ## this line is for mimicing undirected input to directed network
         ## by assuming Wij = Wji
         ## TODO should be modified when appropriate input data will be found
-        gv.W[tt,ff] = ww
+        gv.W[node_id_to,node_id_from] = weight
