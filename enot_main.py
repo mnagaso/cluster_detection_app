@@ -14,6 +14,8 @@ global variables     -> lib/global_vars.py
 import sys
 sys.path.append('./lib')
 
+import config as cf
+
 if __name__ == '__main__':
 # call function by executing order
     #initialize
@@ -21,7 +23,7 @@ if __name__ == '__main__':
 
     # read input first
     import csv_import as csim
-    csim.read_csv()
+    csim.read_csv(cf.infile_path, cf.infile_directed_type)
 
     # calculate p_alpha
     import calc_p_alpha as cp

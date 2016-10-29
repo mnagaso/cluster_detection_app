@@ -9,20 +9,15 @@ csv import
 import csv
 #sys.path.append('./lib')
 import global_var as gv
-# actually "import config" has already done in global_var 
-# but python has implicitely include guard so we import config here again
-# for make it clear
-import config as cf
 
-
-def read_csv():
+def read_csv(infile_path, directed_type):
     #file read from here
 
     #test print
     print ('here in csv_import')
 
     #read input file
-    csv_reader = csv.reader(open(cf.infile))
+    csv_reader = csv.reader(open(infile_path))
 
     for line in csv_reader:
         # input format
@@ -34,4 +29,5 @@ def read_csv():
         ## this line is for mimicing undirected input to directed network
         ## by assuming Wij = Wji
         ## TODO should be modified when appropriate input data will be found
-        gv.W[node_id_to,node_id_from] = weight
+        if directed_type == 2: # undirected case
+            gv.W[node_id_to,node_id_from] = weight

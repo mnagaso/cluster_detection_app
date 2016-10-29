@@ -7,7 +7,8 @@ setup parameters definition
 '''
 
 # input csv filename
-infile = 'data/test.csv'
+infile_path = 'data/test.csv'
+infile_directed_type = 2 # 1 : directed, 2 : undirected
 # output csv filename
 outfile = 'test_out.csv'
 
