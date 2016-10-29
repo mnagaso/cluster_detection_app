@@ -7,31 +7,28 @@ csv import
 '''
 
 import csv
-#sys.path.append('./lib')
-import global_var as gv
-# actually "import config" has already done in global_var 
-# but python has implicitely include guard so we import config here again
-# for make it clear
-import config as cf
+from scipy.sparse import lil_matrix
 
-
-def read_csv():
+def get_w_from_csv(infile_path, directed_type, number_of_all_nodes):
     #file read from here
 
     #test print
     print ('here in csv_import')
 
     #read input file
-    csv_reader = csv.reader(open(cf.infile))
-
+    csv_reader = csv.reader(open(infile_path))
+    w = lil_matrix((number_of_all_nodes+1, number_of_all_nodes+1))
     for line in csv_reader:
         # input format
         # l(ink)_start l_goal weight
-        ff, tt, ww = map(int, line)
+        node_id_from, node_id_to, weight = map(int, line)
         #print (ff, tt, ww)
-        gv.W[ff,tt] = ww
+        w[node_id_from,node_id_to] = weight
 
         ## this line is for mimicing undirected input to directed network
         ## by assuming Wij = Wji
         ## TODO should be modified when appropriate input data will be found
-        gv.W[tt,ff] = ww
+        if directed_type == 2: # undirected case
+            w[node_id_to,node_id_from] = weight
+
+    return w
