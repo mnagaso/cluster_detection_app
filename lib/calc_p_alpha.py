@@ -15,7 +15,7 @@ def power_method():
 
 
 def arnoldi():
-    from scipy.sparse.linalg.eigs as eigs
+#    from scipy.sparse.linalg.eigs import eigs
 
     pass
 
@@ -25,7 +25,6 @@ def init_transient_matrix():
 
 def calc_main():
     # test modify global matrix
-    #gv.W = gv.W*100
+    gv.W = gv.W*100
 
     # prepare transient matrix T (lambiotte 2012 eq.)
-    
