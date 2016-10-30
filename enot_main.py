@@ -28,15 +28,15 @@ if __name__ == '__main__':
 
     # calculate p_alpha
     import calc_p_alpha as cp
-    cp.calc_main()
+    gv.P_alpha = cp.calc_main(gv.W)
 
     # search algorithm for hierarchical mapping starts from here
 
     # output 
-    import csv_export
-    csv_export.export_csv()
+    #import csv_export
+    #csv_export.export_csv()
 
     # visualize
     import visualize_tools as vt
     # show W matrix for debug
-    vt.show_matrix(gv.W)
+    # vt.show_matrix(gv.W)

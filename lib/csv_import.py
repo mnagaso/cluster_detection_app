@@ -17,16 +17,16 @@ def get_w_from_csv(infile_path, directed_type, number_of_all_nodes):
 
     #read input file
     csv_reader = csv.reader(open(infile_path))
-    w = lil_matrix((number_of_all_nodes+1, number_of_all_nodes+1))
+    w = lil_matrix((number_of_all_nodes, number_of_all_nodes))
     for line in csv_reader:
         # input format
         node_id_from, node_id_to, weight = map(int, line)
-        w[node_id_from,node_id_to] = weight
+        w[node_id_from-1,node_id_to-1] = weight
 
         ## this line is for mimicing undirected input to directed network
         ## by assuming Wij = Wji
         ## TODO should be modified when appropriate input data will be found
         if directed_type == 2: # undirected case
-            w[node_id_to,node_id_from] = weight
+            w[node_id_to-1,node_id_from-1] = weight
 
     return w
