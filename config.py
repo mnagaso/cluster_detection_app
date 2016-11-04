@@ -23,4 +23,7 @@ p_conv_threshold = 1.0e-15
 p_algo_type = 1
 
 # type of equation for transient matrix; 1 : standard teleportation, 2 : smart recorded teleportation, 3 : smart unrecorded teleportation. (ref. lambiotte_2012)
-teleport_type = 1
+teleport_type = 2
+
+# tau: teleportation probability, tau = 1 - d, where d is damping factor
+tau = 0.15

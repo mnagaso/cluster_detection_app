@@ -15,4 +15,4 @@ import numpy as np
 W = lil_matrix((cf.total_nodes, cf.total_nodes))
 
 # probability to visit node alpha
-P_alpha = np.zeros(cf.total_nodes)
+P_alpha = np.zeros((1,cf.total_nodes))

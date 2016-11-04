@@ -29,7 +29,8 @@ if __name__ == '__main__':
     # calculate p_alpha
     import calc_p_alpha as cp
     gv.P_alpha = cp.calc_main(gv.W)
-
+    #import numpy as np
+    #print ("check p", gv.P_alpha.T)
     # search algorithm for hierarchical mapping starts from here
 
     # output 
