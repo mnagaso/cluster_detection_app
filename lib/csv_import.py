@@ -28,5 +28,7 @@ def get_w_from_csv(infile_path, directed_type, number_of_all_nodes):
         ## TODO should be modified when appropriate input data will be found
         if directed_type == 2: # undirected case
             w[node_id_from-1,node_id_to-1] = weight
+        else:
+            pass
 
     return w

@@ -26,11 +26,17 @@ if __name__ == '__main__':
     import csv_import as csim
     gv.W = csim.get_w_from_csv(cf.infile_path, cf.infile_directed_type, cf.total_nodes)
 
+#    # check if dangling node exists
+#    import debug_funcs as df
+#    df.check_dangling_nodes(gv.W)
+
     # calculate p_alpha
     import calc_p_alpha as cp
     gv.P_alpha = cp.calc_main(gv.W)
-    #import numpy as np
-    #print ("check p", gv.P_alpha.T)
+    import numpy as np
+    np.set_printoptions(edgeitems=10)
+    print ("check p", gv.P_alpha.T)
+
     # search algorithm for hierarchical mapping starts from here
 
     # output 
