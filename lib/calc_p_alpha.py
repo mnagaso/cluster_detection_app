@@ -103,7 +103,8 @@ def get_iterate_matrix(t, n, w, d):
     #print (t)
     if cf.teleport_type == 1:
         # standard teleoprtation
-        func = (1. - cf.tau) * t + (cf.tau * 1. / n) * np.ones((n,n)) + ((1. - cf.tau)) / n * np.tile(d,(n,1))
+        func = (1. - cf.tau) * t + (cf.tau * 1. / n) * np.ones((n,n)) \
+            + ((1. - cf.tau)) / n * np.tile(d,(n,1))
     elif cf.teleport_type == 2:
         # smart recorded teleportation
 
@@ -125,7 +126,8 @@ def get_iterate_matrix(t, n, w, d):
 
         #TODO should we do something for nodes without links ?
         #     ex. if t[i,j] = 0: func[i,j] = 0
-        func = (1. - cf.tau) * t + cf.tau * 1. / w_total[0,0] * w_in + (1. - cf.tau) * 1. / w_total[0,0] *  KOKONI ARRAY TUKURU!!!!!!!!!!!!!!!!!!!
+        func = (1. - cf.tau) * t + cf.tau * 1. / w_total[0,0] * w_in \
+             + (1. - cf.tau) * 1. / w_total[0,0] * np.einsum('ij,ij->ij',np.asmatrix(w_in_alpha), np.asmatrix(d))
 
     elif cf.teleport_type == 3:
         #smart unrecorded teleportation
@@ -188,7 +190,6 @@ def calc_main(w):
 
     # define a matrix to be iterated (equivalent to G(oogle matrix))
     mat_iter = get_iterate_matrix(T, node_number, w, dangling_node_vector)
-    print ("mat iter", mat_iter)
 
     # invoke eigen value calculation
     if cf.p_algo_type == 1:
