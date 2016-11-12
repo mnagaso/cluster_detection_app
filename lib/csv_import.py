@@ -7,6 +7,7 @@ csv import
 '''
 
 import csv
+import config as cf
 from scipy.sparse import lil_matrix
 
 def get_w_from_csv(infile_path, directed_type, number_of_all_nodes):
@@ -17,7 +18,7 @@ def get_w_from_csv(infile_path, directed_type, number_of_all_nodes):
 
     #read input file
     csv_reader = csv.reader(open(infile_path))
-    w = lil_matrix((number_of_all_nodes, number_of_all_nodes))
+    w = lil_matrix((number_of_all_nodes, number_of_all_nodes),dtype=cf.myfloat)
     for line in csv_reader:
         # input format
         node_id_from, node_id_to, weight = map(int, line)

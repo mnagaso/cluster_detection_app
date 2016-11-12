@@ -19,10 +19,11 @@ def power_method(A,n):
     '''
     
     from numpy import linalg as LA
+    #from scipy import linalg as LA
     import time
     time_start = time.time()
 
-    p = np.ones((n,1))
+    p = np.ones((n,1),dtype=cf.myfloat)
     # set initial p_alpha values to 1/total_nodes
     p *= 1./n
     #print ("check initial p_alpha",p)
@@ -32,12 +33,12 @@ def power_method(A,n):
     diff = 999999.
     step = 0
     # array to store p_alpha in former step
-    p_former_step = np.zeros((n,1))
+    p_former_step = np.zeros((n,1),dtype=cf.myfloat)
 
     while diff > threshold:
         p_former_step = p
 
-        dump_A_dot_p = np.zeros(n)           
+        dump_A_dot_p = np.zeros(n,dtype=cf.myfloat)           
         dump_norm_A_dot_p = 0.
         # A*p_t
         dump_A_dot_p = np.dot(A,p)
@@ -47,13 +48,13 @@ def power_method(A,n):
         p = dump_A_dot_p / dump_norm_A_dot_p
         diff = LA.norm(p - p_former_step, ord=1)
 
-        if step % 1 == 0:
+        if step % 10 == 0:
             print ("step: ", step," ||p_t+1 - p_t||_1 -> ", diff)
         step += 1
 
     time_elapsed = time.time() - time_start
     print ("power method converged at:", step, "step")
-    print ("end the power iteration with ||p_t+1 - p_t|| = ",diff)
+    print ("end the power iteration with ||p_t+1 - p_t||_1 = ",diff)
     print ("elapsed time: ", time_elapsed, " seconds")
 
     # normalize 
@@ -75,10 +76,10 @@ def init_transient_matrix(w, n):
     """prepare T (link-weight or hyper link) matrix.
        T is stochastic."""
     # define Transition matrix    
-    t = spa.lil_matrix((n, n))
+    t = spa.lil_matrix((n, n),dtype=cf.myfloat)
 
     # calculate W_out_j
-    w_out_j = np.zeros(n)
+    w_out_j = np.zeros(n,dtype=cf.myfloat)
 
     # sum over columns
     w_out_j = w.sum(axis=0)
@@ -91,7 +92,7 @@ def init_transient_matrix(w, n):
         t[i,j] = w[i,j] / w_out_j[0,j]
 
     # check if each column of t = 0
-    t_col_sum = np.zeros(n)
+    t_col_sum = np.zeros(n,dtype=cf.myfloat)
     t_col_sum = t.sum(axis=0)
     print ("t_col_sum: ",t_col_sum)
 
@@ -99,7 +100,7 @@ def init_transient_matrix(w, n):
 
 def get_iterate_matrix(t, n, w, d):
     """prepare a matrix to be iterated."""
-    func = np.zeros((n, n))
+    func = np.zeros((n, n),dtype=cf.myfloat)
     #print (t)
     if cf.teleport_type == 1:
         # standard teleoprtation
@@ -109,14 +110,14 @@ def get_iterate_matrix(t, n, w, d):
         # smart recorded teleportation
 
         # calculate w_in_alpha vector
-        w_in_alpha = np.zeros(n)
+        w_in_alpha = np.zeros(n,dtype=cf.myfloat)
 
         # sum over rows
         w_in_alpha = w.sum(axis=1)
         #print ("w in", w_in_alpha)
         
         # prepare w_in matrix
-        w_in = np.zeros((n,n))
+        w_in = np.zeros((n,n),dtype=cf.myfloat)
 
         for col in range(n):
             w_in[col,:] = w_in_alpha[col] 
@@ -148,18 +149,18 @@ def check_dangling_nodes(w,n):
     """ look for dangling nodes fron w and make dangling_node_vector a[]
         a[i] = 1 when node_i equal dangling, otherwise a[i] = 0"""
 
-    a = np.zeros(n)
+    a = np.zeros(n,dtype=cf.myfloat)
 
     #print ("w", w.todense())
     # calculate w_in_alpha vector
-    w_in_alpha = np.zeros(n)
+    w_in_alpha = np.zeros(n,dtype=cf.myfloat)
     # sum over rows
     w_in_alpha = w.sum(axis=1)
     #print ("in", w_in_alpha)
 
 
     # calculate w_out_alpha vector
-    w_out_alpha = np.zeros(n)
+    w_out_alpha = np.zeros(n,dtype=cf.myfloat)
     # sum over columns
     w_out_alpha = w.sum(axis=0)
     #print ("out",w_out_alpha)
@@ -168,7 +169,8 @@ def check_dangling_nodes(w,n):
                 # node[ins] is dangling
                 a[i] = 1
                 print ("node id: ",i+1," dangling")        
-
+    
+    print ("number of dangling node", np.count_nonzero(a))
     print ("dangling_node_vector",a)
 
     return a
@@ -181,11 +183,11 @@ def calc_main(w):
     node_number = w.shape[0]
     
     # check if dangling nodes exists
-    dangling_node_vector = np.array(node_number)
+    dangling_node_vector = np.array(node_number,dtype=cf.myfloat)
     dangling_node_vector = check_dangling_nodes(w, node_number)
 
     # prepare transient matrix T (lambiotte 2012 eq.) or S matrix (found google logic)
-    T = spa.lil_matrix((node_number, node_number))
+    T = spa.lil_matrix((node_number, node_number),dtype=cf.myfloat)
     T = init_transient_matrix(w, node_number)
 
     # define a matrix to be iterated (equivalent to G(oogle matrix))
