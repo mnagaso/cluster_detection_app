@@ -18,31 +18,29 @@ import global_var as gv
 import config as cf
 
 if __name__ == '__main__':
-# call function by executing order
-    #initialize
-    #import global_var
+    ''' call functions by executing order
+    '''
+    # initialize
 
     # read input and get W (link-weight matrix, lambiotte 2012)
     import csv_import as csim
-    gv.W = csim.get_w_from_csv(cf.infile_path, cf.infile_directed_type, cf.total_nodes)
-
-#    # check if dangling node exists
-#    import debug_funcs as df
-#    df.check_dangling_nodes(gv.W)
+    gv.W = csim.get_w_from_csv(
+        cf.infile_path, cf.infile_directed_type, cf.total_nodes)
 
     # calculate p_alpha
     import calc_p_alpha as cp
-    gv.P_alpha = cp.calc_main(gv.W)
-    import numpy as np
-    np.set_printoptions(edgeitems=10)
-    print ("check p", gv.P_alpha.T)
+
+    init_p_alpha = cp.Calc_p_alpha(gv.W)
+    gv.P_alpha = init_p_alpha.p_alpha
+    # gv.W should be normalized (replace with T matrix)
+    gv.W = init_p_alpha.T
 
     # search algorithm for hierarchical mapping starts from here
-
-    # output 
-    #import csv_export
-    #csv_export.export_csv()
-
+    import cluster as cl
+    cluster = cl.Cluster(cf.total_nodes, gv.W, gv.P_alpha)
+    # output
+    # import csv_export
+    # csv_export.export_csv()
     # visualize
     import visualize_tools as vt
     # show W matrix for debug

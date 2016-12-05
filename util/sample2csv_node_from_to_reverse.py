@@ -28,8 +28,10 @@ def writeOutCsv(infile,outfile):
             continue
         else:
             newline = line.split()
-            #print newline
-            writer.writerow(newline)
+            print (newline)
+            towrite = [newline[1],newline[0],newline[2]]
+            writer.writerow(towrite)
+
             count+=1
         #print len(line) 
 
