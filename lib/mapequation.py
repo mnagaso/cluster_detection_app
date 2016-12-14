@@ -11,7 +11,6 @@ import math
 
 class Map(ql.Quality):
     
-    # array for 
 
     def __init__(self):
         print("map equation class defined")
@@ -26,9 +25,9 @@ class Map(ql.Quality):
                 ws += w_ele
         return ws
 
-    def calc_exit_flow(self, nodes, modules, w, pa): # rosvall2010 eq.6
+    def calc_exit_flow(self, modules, w, pa): # rosvall2010 eq.6
         exit_flow = np.zeros(len(modules))
-        n = len(nodes) #total number of nodes
+        n = len(pa) #total number of nodes
         for i_mod in range(len(modules)):
             # number of nodes in module_i
             n_i = modules[i_mod].get_num_nodes()
@@ -76,14 +75,48 @@ class Map(ql.Quality):
 
         return term_1 + term_2 + term_3 + term_4
 
-    def get_quality_value(self, __nodes, __modules, w, p_a):
-        ''' return map equation value
+    def skip_module_without_node(self, modules):
+        """ detect modules which has no node 
+            then return a module object list which such modules are excluded """
+        
+        modified_list = [] 
+
+        for i, mod in enumerate(modules):
+            if mod.get_num_nodes() != 0:
+                modified_list.append(mod)
+
+        #print ("no member module excluded:", modified_list)
+        return modified_list
+
+    def get_quality_value(self, __modules, w, p_a):
+        ''' *** THIS FUNCTION IS OBLIGATE FOR ALL QUALITY EVALUATE MODULE***
+
+            return map equation value
             all class for quality evaluation need to have exactly the same name of function
         '''
-        
+
+        #print("modules", __modules)
+        # skip a module without any node
+        mod_to_calc = self.skip_module_without_node(__modules)
+        #print("calculated module", mod_to_calc)
         # calculate exit probability
-        exit_flow = self.calc_exit_flow(__nodes, __modules, w, p_a)
-        #print ("initial state of exit_flow", exit_flow)
-        code_length = self.calc_two_level_map(__modules, exit_flow, p_a)
+        exit_flow = self.calc_exit_flow(mod_to_calc, w, p_a)
+        print ("state of exit_flow", exit_flow)
+        code_length = self.calc_two_level_map(mod_to_calc, exit_flow, p_a)
         
         return code_length
+
+    def check_network_got_better(self, ql_before, ql_after):
+        """ *** THIS FUNCTION IS OBLIGATE FOR ALL QUALITY EVALUATE MODULE*** 
+        
+            check the change of ql score and 
+            return true if ql value became better
+            in mapequation's case, ql value become smaller 
+            when better clustring acquired 
+        """
+
+        if ql_before > ql_after:
+            return True
+        else:
+            return False
+

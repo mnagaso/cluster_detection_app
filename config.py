@@ -37,5 +37,7 @@ quality_method = 1
 # community division type; 1: two-level, 2: hierarchial
 division_type = 1
 
+# threshold for loop of search algorithm
+threshold_search = 0.0
 # numpy accuracy
 myfloat = np.float64

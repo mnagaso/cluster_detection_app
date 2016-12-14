@@ -21,6 +21,11 @@ if __name__ == '__main__':
     ''' call functions by executing order
     '''
     # initialize
+    print("#####################################")
+    print("## Initialization start            ##")
+    print("#####################################")
+    print("\n\n\n")
+
 
     # read input and get W (link-weight matrix, lambiotte 2012)
     import csv_import as csim
@@ -36,6 +41,12 @@ if __name__ == '__main__':
     gv.W = init_p_alpha.T
 
     # search algorithm for hierarchical mapping starts from here
+    print("\n\n\n")
+    print("#####################################")
+    print("## Two Level Clustering start      ##")
+    print("#####################################")
+    print("\n\n\n")
+
     import cluster as cl
     cluster = cl.Cluster(cf.total_nodes, gv.W, gv.P_alpha)
     # output
