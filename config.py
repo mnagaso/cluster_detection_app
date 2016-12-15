@@ -10,13 +10,18 @@ setup parameters definition
 import numpy as np
 
 # input csv filename
-infile_path = 'data/package4_network.csv'# 'data/debug_no_dangling.csv'  
+#infile_path = 'data/package4_network.csv'
+#infile_path = 'data/debug_no_dangling.csv'  
+infile_path = 'data/n24.csv'  
+
 infile_directed_type = 1 # 1 : directed, 2 : undirected
 # output csv filename
 outfile = 'test_out.csv'
 
 # total number of nodes in input data
-total_nodes = 128 #4 #7343
+#total_nodes = 128 
+#total_nodes = 4
+total_nodes = 24
 
 # convergence threshold for p_alpha power method
 # on Rosvall_2010 this value is set as "1.0e-15"
