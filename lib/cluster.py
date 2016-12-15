@@ -78,7 +78,6 @@ class Cluster:
             ### 1st step --- node movement ###
 ############# secondary loop for each node movement
             for i in range(len(random_sequence)):
-                print("\n\n$$$ node movement loop count:  ", i,"$$$$$$$$$$$$$$$$\n\n")
                 # find a module where the quality value become the best score
                 
                 # set a place of module to be moved in array self.__modules[ ]
@@ -109,9 +108,9 @@ class Cluster:
 ################# thirdly loop for moving a node to neighboring modules
                 for index, mod_id_neigh in enumerate(neighbor_list):
                     # dump the neighbor module object
-                    print ("------- index: ", index,"mod_id_neigh: ", mod_id_neigh)
+                    print ("------- pass: ", pass_count, "n-th node: ", i," move trial: ", index,"mod_id_neigh: ", mod_id_neigh)
                     dump_module = copy.deepcopy(self.__modules[mod_id_neigh - 1])
-                    print ("dumped module when dumped", dump_module)                   
+                    #print ("dumped module when dumped", dump_module)                   
                     # add nodes to one of neighboring module
                     self.__modules[mod_id_neigh - 1].add_node_multi_temp(nodes_to_be_moved)
                     print ("dumped module when origin modified", dump_module)
@@ -158,7 +157,7 @@ class Cluster:
                     # for module object
                     # here the node move is not temporary but we us temp method because 
                     # nodes_to_be_moved list has not node object but id itself in integer
-                    self.__modules[mp_i].add_node_multi_temp(nodes_to_be_moved)
+                    #self.__modules[mp_i].add_node_multi_temp(nodes_to_be_moved)
 
                     # for node object
                     for j, node_id in enumerate(nodes_to_be_moved):
@@ -168,9 +167,9 @@ class Cluster:
             # module id rename
             for ind, mod_id in enumerate(module_id_to_be_erased):
                 # erase __module objects which has no node member
-                print ("before erase module in cluster: ", self.__modules)
+                #print ("before erase module in cluster: ", self.__modules)
                 self.__modules.pop(mod_id-1)
-                print ("after:                        : ", self.__modules)
+                #print ("after:                        : ", self.__modules)
 
                 # rename module id
                 self.rename_module_id(self.__modules, self.__nodes, mod_id)
