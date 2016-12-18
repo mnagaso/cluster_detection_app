@@ -69,7 +69,7 @@ class Cluster:
             print("\n\n\n")
             print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
             print("% ")
-            print("Search algorithm: ", pass_count, " pass start\n")
+            print("\nSearch algorithm: ", pass_count, " pass start\n")
             print("% ")
             print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
             print("\n\n\n")
@@ -85,7 +85,8 @@ class Cluster:
             # array to store module ids without member
             module_id_to_be_erased = []
 
-
+            # store ql value for checking its change between each pass
+            ql_pass = ql_now
 
 ############# secondary loop for each node movement
             for i in range(len(random_sequence)):
@@ -188,12 +189,14 @@ class Cluster:
                 self.__modules.pop(mod_id-1-erase_count)
                 #print ("after:                        : ", self.__modules)
                 erase_count += 1
-            # rename module id
-            self.rename_module_id(self.__modules, self.__nodes)
+            # rename and sort module id
+            self.rename_sort_module_id(self.__modules, self.__nodes)
 
             print("modules after rename,", self.__modules)
+            
+            # sort node ids
 
-
+            
             # merge p_a and w array
             pa_merged = np.delete(pa_merged, pa_merged[:], None)
             #print(type(w_merged))
@@ -203,14 +206,20 @@ class Cluster:
             
 
             # exit the search algorithm when the change of quality value became lower than the threshold
-            #if change_quality_value <= threshold_search:
-            #    break
+            if ql.check_network_converged(ql_pass, ql_now):
+                print("#########################################")
+                print("#")
+                print("# two level clustring algorithm Converged")
+                print("#")
+                print("#########################################")
+                break
             pass_count += 1
 
         # end of community detection
 
-    def rename_module_id(self, modules, nodes):
+    def rename_sort_module_id(self, modules, nodes):
         """ fill skipped module id then rename all
+            then sort node ids
         """
         for i, obj in enumerate(modules):
     
@@ -219,6 +228,8 @@ class Cluster:
             node_id_list = obj.get_node_list()
             for j, node_id in enumerate(node_id_list):
                 nodes[node_id-1].set_module_id(new_id)
+            # sort
+            obj.sort_node_id_list()
 
     def construct_merge_pa_w_array(self, w_node_base, pa_node_base, pa_merged, w_merged, modules):
         print(pa_node_base)

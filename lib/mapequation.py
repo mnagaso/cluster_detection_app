@@ -52,7 +52,9 @@ class Map(ql.Quality):
                 link_weights_to_out = self.sum_link_weight_to_out(w[:,node_id-1].todense(), node_id, mod_obj.get_node_list())
                 sum_pa_dot_w += pa[node_id-1]*link_weights_to_out
 
-            exit_flow[i_mod] = cf.tau * (n - n_i)/n * sum_pa + (1 - cf.tau) * sum_pa_dot_w
+            #exit_flow[i_mod] = cf.tau * (n - n_i)/(n - 1) * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall2008 eq.7
+            exit_flow[i_mod] = cf.tau * (n - n_i)/n * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall20010 eq.6
+
         return exit_flow     
 
     def calc_enter_flow(): # inversed eq.6 of rosvall2010
@@ -127,6 +129,20 @@ class Map(ql.Quality):
         """
 
         if ql_before > ql_after:
+            return True
+        else:
+            return False
+
+    def check_network_converged(self, ql_before, ql_after):
+        """ *** THIS FUNCTION IS OBLIGATE FOR ALL QUALITY EVALUATION MODULE*** 
+        
+            check the change of ql score and 
+            return true if ql value became better
+            in mapequation's case, ql value become smaller 
+            when better clustring acquired 
+        """
+
+        if fabs(ql_before - ql_after) <= threshold_search:
             return True
         else:
             return False

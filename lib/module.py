@@ -66,6 +66,12 @@ class Module:
         """ reset module id """
         self.__module_id = new_id
 
+    def sort_node_id_list(self):
+        """ sort the node id list in this module
+        """
+        self.__node_id_list = sorted(self.__node_id_list, key=int)
+        #print("sorted", self.__node_id_list)
+
     def get_num_nodes(self):
         """return the number of nodes belonging to this module"""
         return len(self.__node_id_list)
