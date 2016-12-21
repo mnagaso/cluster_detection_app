@@ -65,7 +65,6 @@ class Cluster:
 
 ######### continue node movement till the code length stops to be improved
         while True:
-    
             print("\n\n\n")
             print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
             print("% ")
@@ -80,7 +79,7 @@ class Cluster:
             np.random.shuffle(random_sequence)
             print("generated random sequence: ",random_sequence)
 
-            ### 1st step --- node movement ###
+            print("### 1st step --- node movement ###")
 
             # array to store module ids without member
             module_id_to_be_erased = []
@@ -93,6 +92,7 @@ class Cluster:
                 # find a module where the quality value become the best score
                 
                 # set a place of module to be moved in array self.__modules[ ]
+                # mp_i starts from 0
                 mp_i = random_sequence[i]
 
                 # get a list of neighboring module id
@@ -178,7 +178,7 @@ class Cluster:
             print("### pass:", pass_count, ", 1st step end")
 
 
-            ### 2nd step --- reconstruct modules and links ###
+            print("### 2nd step --- reconstruct modules and links ###")
 
             print("modules before rename,", self.__modules)
             print("we are just removing modules: ", module_id_to_be_erased)
@@ -196,20 +196,8 @@ class Cluster:
 
             print("modules after rename,", self.__modules)
             
-            # sort node ids
-
-            
             # merge p_a and w array
-            #print("pa_merged before: \n", pa_merged)
-            #print("w_merged before: \n", w_merged)
             pa_merged, w_merged = self.construct_merge_pa_w_array(w, p_a, pa_merged, w_merged, self.__modules)
-            #print("pa_merged after: \n", pa_merged)
-            #print("w_merged after: \n", w_merged)
-            #print("pa_ori after: \n", p_a)
-            #print("w_ori after: \n", w)
-   
-
-            
 
             # exit the search algorithm when the change of quality value became lower than the threshold
             if QL.check_network_converged(ql_pass, ql_now) == True:

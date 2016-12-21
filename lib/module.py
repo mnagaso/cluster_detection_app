@@ -92,14 +92,14 @@ class Module:
                 #module_id = nodes[i].get_module_id()
                 # id count starts 1 but stored at 0-th element of the array
                 #list_neighbors.append(module_id)
-                list_neighbors.append(i)
+                list_neighbors.append(i+1)
         for i, w_node in enumerate(w_from):
             if w_node != 0:
                 # find module id from node id
                 #module_id = nodes[i].get_module_id()
                 # id count starts 1 but stored at 0-th element of the array
                 #list_neighbors.append(module_id) 
-                list_neighbors.append(i)
+                list_neighbors.append(i+1)
         # check duplicate items
         seen = set()
         uniq_list_neighbors = [x for x in list_neighbors if x not in seen and not seen.add(x)]
