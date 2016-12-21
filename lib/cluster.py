@@ -283,3 +283,8 @@ class Cluster:
         print("w_merged  in func: \n", w_merged)
    
         return pa_merged, w_merged
+
+    def get_network(self):
+        """ get module list
+        """
+        return self.__modules
