@@ -49,6 +49,8 @@ if __name__ == '__main__':
 
     import cluster as cl
     cluster = cl.Cluster(cf.total_nodes, gv.W, gv.P_alpha)
+
+    print("clustered network: \n", cluster.get_network())
     # output
     # import csv_export
     # csv_export.export_csv()
