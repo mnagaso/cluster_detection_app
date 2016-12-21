@@ -16,7 +16,7 @@ class Map(ql.Quality):
         print("map equation class defined")
 
 
-    def sum_link_weight_to_out(self, w_oneline, node_id, node_id_in_same_mod):
+    def sum_link_weight_to_out(self, w_oneline, node_id_in_same_mod):
         """ find links from a node to nodes belonging to other module
             then return the sum of those link weights"""
         ws = 0
@@ -49,7 +49,7 @@ class Map(ql.Quality):
                 sum_pa += pa[node_id-1]
 
                 # find links from a node to nodes belonging to outer module
-                link_weights_to_out = self.sum_link_weight_to_out(w[:,node_id-1].todense(), node_id, mod_obj.get_node_list())
+                link_weights_to_out = self.sum_link_weight_to_out(w[:,node_id-1].todense().A1, mod_obj.get_node_list())
                 sum_pa_dot_w += pa[node_id-1]*link_weights_to_out
 
             #exit_flow[i_mod] = cf.tau * (n - n_i)/(n - 1) * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall2008 eq.7
@@ -142,7 +142,7 @@ class Map(ql.Quality):
             when better clustring acquired 
         """
 
-        if fabs(ql_before - ql_after) <= threshold_search:
+        if math.fabs(ql_before - ql_after) <= cf.threshold_search:
             return True
         else:
             return False

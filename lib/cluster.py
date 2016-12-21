@@ -96,7 +96,8 @@ class Cluster:
                 mp_i = random_sequence[i]
 
                 # get a list of neighboring module id
-                neighbor_list = self.__modules[mp_i].get_neighbor_list(w_merged[:,mp_i].todense(), self.__nodes)
+                neighbor_list = self.__modules[mp_i].get_neighbor_list(w_merged[:,mp_i].todense().A1, w_merged[mp_i,:].todense().A1)
+                print("module id: ", mp_i + 1," has neiboring module id: ", neighbor_list)
                 # get a list of node id to be moved
                 nodes_to_be_moved = self.__modules[mp_i].get_node_list()
                 #print ("count: ", pass_count)
@@ -127,7 +128,8 @@ class Cluster:
 
                     print ("move nodes id: ", nodes_to_be_moved)
                     # calculate code length
-                    ql_trial = QL.get_quality_value(self.__modules, w_merged, pa_merged)
+                    #ql_trial = QL.get_quality_value(self.__modules, w_merged, pa_merged)
+                    ql_trial = QL.get_quality_value(self.__modules, w, p_a)
                     print ("ql change, minimum_ql ---> this trial node move: ", ql_min, " ---> ",ql_trial)
 
                     if QL.check_network_got_better(ql_min, ql_trial) == True: # if the clusting become better
@@ -180,7 +182,7 @@ class Cluster:
 
             print("modules before rename,", self.__modules)
             print("we are just removing modules: ", module_id_to_be_erased)
-            # module id renam
+            # module id rename
             module_id_to_be_erased.sort()
             erase_count = 0
             for ind, mod_id in enumerate(module_id_to_be_erased):
@@ -198,15 +200,19 @@ class Cluster:
 
             
             # merge p_a and w array
-            pa_merged = np.delete(pa_merged, pa_merged[:], None)
-            #print(type(w_merged))
-            #w_merged = w_merged.reshape(1,0)
-            self.construct_merge_pa_w_array(w, p_a, pa_merged, w_merged, self.__modules)
-                
+            #print("pa_merged before: \n", pa_merged)
+            #print("w_merged before: \n", w_merged)
+            pa_merged, w_merged = self.construct_merge_pa_w_array(w, p_a, pa_merged, w_merged, self.__modules)
+            #print("pa_merged after: \n", pa_merged)
+            #print("w_merged after: \n", w_merged)
+            #print("pa_ori after: \n", p_a)
+            #print("w_ori after: \n", w)
+   
+
             
 
             # exit the search algorithm when the change of quality value became lower than the threshold
-            if ql.check_network_converged(ql_pass, ql_now):
+            if QL.check_network_converged(ql_pass, ql_now) == True:
                 print("#########################################")
                 print("#")
                 print("# two level clustring algorithm Converged")
@@ -232,7 +238,9 @@ class Cluster:
             obj.sort_node_id_list()
 
     def construct_merge_pa_w_array(self, w_node_base, pa_node_base, pa_merged, w_merged, modules):
-        print(pa_node_base)
+ 
+        pa_merged = np.delete(pa_merged, pa_merged[:], None)
+        
         num_module = len(modules)
 
         # pa list
@@ -242,17 +250,36 @@ class Cluster:
 
         for i, mod in enumerate(modules):
             node_list = mod.get_node_list()
-            print("node list ", node_list)
+            #node_list = np.array(mod.get_node_list())
+            #print("node list ", node_list)
             pa_to_add = 0
             for j, node in enumerate(node_list):
-                print ("node, pa", node, pa_node_base[node-1])
+                #print ("node, pa", node, pa_node_base[node-1])
                 pa_to_add += pa_node_base[node-1]
-            print ("sum of pa:", pa_to_add)
+    
+                       
+            #print ("sum of pa:", pa_to_add)
             pa_temp.append(pa_to_add)
-            print ("pa to marged", pa_temp)
+            #print ("pa to marged", pa_temp)
             
-        # convert to a numpy array
-        pa_merged = np.append(pa_temp)
-        print ("pa_merged", pa_merged)
+            # secondary module loop for preparing w_merged
+            for j, mod_2 in enumerate(modules):
+                node_list_2 = mod_2.get_node_list()
+                #node_list_2 = np.array(mod_2.get_node_list())
+                
+                if i == j:
+                    # internal link weights become 0
+                    w_merged[i,j] = 0
+                else: # connection with other modules
+                    for k in range(len(node_list)): #np.nditer(node_list):
+                        for l in range(len(node_list_2)):#np.nditer(node_list_2):
+                            w_merged[i,j] += w_node_base[node_list[k]-1,node_list_2[l]-1] 
 
-            #w_merged = np.append(w_merged,pa_to_add)
+
+        # convert to a numpy array
+        pa_merged = np.array(pa_temp)
+        #print ("pa_merged", pa_merged)
+        print("pa_merged in func: \n", pa_merged)
+        print("w_merged  in func: \n", w_merged)
+   
+        return pa_merged, w_merged
