@@ -55,5 +55,6 @@ threshold_search = 0.000000000000000000000000000000
 myfloat = np.float64
 
 # seed number for random node-pick order generation
+# set = 0 for totally random generation
 seed_var = 114514
 

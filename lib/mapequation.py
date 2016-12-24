@@ -18,19 +18,14 @@ class Map(ql.Quality):
         """ find links from a node to nodes belonging to other module
             then return the sum of those link weights"""
         ws = 0
-        #print("object node:", node_id)
 
         # fisrtly it calculates weight sum from all linked node
         for i, w_val in enumerate(w_oneline):
-            #if i != node_id-1 :
             ws += w_val
         # then subtract link weights with nodes in the same module
         for i, node_id in enumerate(node_id_in_same_mod):
             ws -= w_oneline[node_id-1]
             
-            #print ("weights:", w_oneline[node_id-1])
-        #print("node:", node_id_in_same_mod)
-        #print("ws:",ws)
         return ws
 
     def calc_exit_flow(self, modules, w, pa): # rosvall2010 eq.6
@@ -62,8 +57,8 @@ class Map(ql.Quality):
         """ calculate code length using rosvall2010 eq.4
         """
         term_1 = np.sum(exit_flow)*math.log(np.sum(exit_flow), 2.0)
-        term_2 = 0.0 #-2.0 * np.dot(exit_flow, math.log(exit_flow, 2.0))
-        term_3 = 0.0 #-1.0 * np.dot(pa, math.log(pa, 2.0))
+        term_2 = 0.0 
+        term_3 = 0.0 
         term_4 = 0.0
 
         # calculate 3rd term
@@ -95,7 +90,6 @@ class Map(ql.Quality):
             if mod.get_num_nodes() != 0:
                 modified_list.append(mod)
 
-        #print ("no member module excluded:", modified_list)
         return modified_list
 
     def get_quality_value(self, __modules, w, p_a):
@@ -104,16 +98,12 @@ class Map(ql.Quality):
             return map equation value
             all class for quality evaluation need to have exactly the same name of function
         '''
-        #print("modules", __modules)
         # skip a module without any node
         mod_to_calc = self.skip_module_without_node(__modules)
-        #print("calculated module", mod_to_calc)
+        
         # calculate exit probability
         exit_flow = self.calc_exit_flow(mod_to_calc, w, p_a)
-        #print ("state of exit_flow", exit_flow)
-        print("the number of modules in map equation: ", len(__modules))
-        print("exit_flow length", len(exit_flow))
-        print("pa length", len(p_a))
+        
         code_length = self.calc_two_level_map(mod_to_calc, exit_flow, p_a)
         
         return code_length

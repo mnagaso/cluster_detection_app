@@ -56,9 +56,6 @@ class Cluster:
         # variable for following the change of community quality
         ql_now = initial_ql_val
 
-        # to count the passes
-        #pass_count = 0
-
         # conut the number of 1st step attempted times 
         attempt_count = 0
         # initial number of modules
@@ -68,7 +65,10 @@ class Cluster:
         pa_merged = p_a
 
         # setup seed value for random node-pick order generation
-        np.random.seed(cf.seed_var)
+        if cf.seed_var != 0:
+            np.random.seed(cf.seed_var)
+        else:
+            pass
 
 ######### continue node movement till the code length stops to be improved
         while True:
@@ -79,17 +79,14 @@ class Cluster:
             print("% ")
             print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
             print("\n\n\n")
-            
 
 
             print("### 1st step --- node movement ###")
-
     
             # (re-)generate the random order for picking a node to be moved
             random_sequence = np.arange(len(pa_merged))
             np.random.shuffle(random_sequence)
             print("generated random sequence: ",random_sequence)
-
 
             # array to store module ids without member
             module_id_to_be_erased = []
@@ -110,11 +107,9 @@ class Cluster:
                 print("module id: ", mp_i + 1," has neiboring module id: ", neighbor_list)
                 # get a list of node id to be moved
                 node_ids_to_be_moved = self.__modules[mp_i].get_node_list()
-                #print ("count: ", pass_count)
 
                 # remove nodes from its module
                 self.__modules[mp_i].remove_node_all()
-                #print ("nodes in module", self.__modules[i].get_node_list())
  
                 # remove module id from node objects
                 for j, node_id in enumerate(node_ids_to_be_moved):
@@ -137,7 +132,6 @@ class Cluster:
                     print ("move nodes id: ", node_ids_to_be_moved)
 
                     # calculate code length
-                    #ql_trial = QL.get_quality_value(self.__modules, w_merged, pa_merged)
                     ql_trial = QL.get_quality_value(self.__modules, w, p_a)
                     print ("ql change, minimum_ql ---> this trial node move: ", ql_min, " ---> ",ql_trial)
 
@@ -164,10 +158,6 @@ class Cluster:
                     for j, node_id in enumerate(node_ids_to_be_moved):
                         self.__nodes[node_id-1].set_module_id(dump_mod_id)
 
-                    # store module ids with no member
-                    #module_id_to_be_erased.append(mp_i+1)
-                    #print ("module ids to be erased: ", module_id_to_be_erased)
-                    
                     # update ql value
                     ql_now = ql_min
 
@@ -197,9 +187,6 @@ class Cluster:
     
         print("### attempt count:", attempt_count, ", 1st step end")
 
-
-        # print("### 2nd step --- reconstruct modules and links ###")
-
         print("modules before rename,", self.__modules)
 
         module_id_to_be_erased = self.get_module_ids_without_node(self.__modules)
@@ -210,9 +197,7 @@ class Cluster:
         erase_count = 0
         for ind, mod_id in enumerate(module_id_to_be_erased):
             # erase __module objects which has no node member
-            #print ("before erase module in cluster: ", self.__modules)
             self.__modules.pop(mod_id-1-erase_count)
-            #print ("after:                        : ", self.__modules)
             erase_count += 1
         # rename and sort module id
         self.rename_sort_module_id(self.__modules, self.__nodes)
@@ -222,8 +207,6 @@ class Cluster:
         # merge p_a and w array
         pa_merged, w_merged = self.construct_merge_pa_w_array(w, p_a, pa_merged, w_merged, self.__modules)
 
-        
-        #pass_count += 1
 
         # end of community detection
 
@@ -255,35 +238,27 @@ class Cluster:
 
         for i, mod in enumerate(modules):
             node_list = mod.get_node_list()
-            #node_list = np.array(mod.get_node_list())
-            #print("node list ", node_list)
             pa_to_add = 0
             for j, node in enumerate(node_list):
-                #print ("node, pa", node, pa_node_base[node-1])
                 pa_to_add += pa_node_base[node-1]
     
-                       
-            #print ("sum of pa:", pa_to_add)
             pa_temp.append(pa_to_add)
-            #print ("pa to marged", pa_temp)
             
             # secondary module loop for preparing w_merged
             for j, mod_2 in enumerate(modules):
                 node_list_2 = mod_2.get_node_list()
-                #node_list_2 = np.array(mod_2.get_node_list())
                 
                 if i == j:
                     # internal link weights become 0
                     w_merged[i,j] = 0
                 else: # connection with other modules
-                    for k in range(len(node_list)): #np.nditer(node_list):
-                        for l in range(len(node_list_2)):#np.nditer(node_list_2):
+                    for k in range(len(node_list)):
+                        for l in range(len(node_list_2)):
                             w_merged[i,j] += w_node_base[node_list[k]-1,node_list_2[l]-1] 
 
 
         # convert to a numpy array
         pa_merged = np.array(pa_temp)
-        #print ("pa_merged", pa_merged)
         print("pa_merged in func: \n", pa_merged)
         print("w_merged  in func: \n", w_merged)
    
