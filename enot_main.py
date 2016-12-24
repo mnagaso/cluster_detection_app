@@ -41,14 +41,30 @@ if __name__ == '__main__':
     gv.W = init_p_alpha.T
 
     # search algorithm for hierarchical mapping starts from here
-    print("\n\n\n")
-    print("#####################################")
-    print("## Two Level Clustering start      ##")
-    print("#####################################")
-    print("\n\n\n")
+    if cf.division_type == 1:
+        print("\n\n\n")
+        print("#####################################")
+        print("## Two Level Clustering start      ##")
+        print("#####################################")
+        print("\n\n\n")
 
-    import cluster as cl
-    cluster = cl.Cluster(cf.total_nodes, gv.W, gv.P_alpha)
+        import cluster as cl
+        cluster = cl.Cluster(cf.total_nodes, gv.W, gv.P_alpha)
+
+    elif cf.division_type ==2:
+        print("\n\n\n")
+        print("#####################################")
+        print("## Hierarchal Clustering start     ##")
+        print("#####################################")
+        print("\n\n\n")
+
+        import cluster as cl
+        cluster = cl.Cluster(cf.total_nodes, gv.W, gv.P_alpha)
+
+    else:
+        print("error: the flag type for clustering method is not implemented")
+        print("prease check the setup of division_type in config.py")
+        sys.exit(1)
 
     print("clustered network: \n", cluster.get_network())
     # output

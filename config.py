@@ -13,15 +13,16 @@ import numpy as np
 #infile_path = 'data/package4_network.csv'
 #infile_path = 'data/debug_no_dangling.csv'  
 #infile_path = 'data/sixtriangles_dir.csv'  
-#infile_path = 'data/n24.csv'  
-infile_path = 'data/n48.csv'  
+infile_path = 'data/n24.csv'  
+#infile_path = 'data/n48.csv'  
 
 
 # total number of nodes in input data
 #total_nodes = 128 
 #total_nodes = 4
-#total_nodes = 24
-total_nodes = 48
+#total_nodes = 18
+total_nodes = 24
+#total_nodes = 48
 
 
 infile_directed_type = 1 # 1 : directed, 2 : undirected
@@ -48,6 +49,11 @@ quality_method = 1
 division_type = 1
 
 # threshold for loop of search algorithm
-threshold_search = 0.0
+threshold_search = 0.000000000000000000000000000000
+
 # numpy accuracy
 myfloat = np.float64
+
+# seed number for random node-pick order generation
+seed_var = 114514
+

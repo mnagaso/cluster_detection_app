@@ -10,11 +10,9 @@ import numpy as np
 import math
 
 class Map(ql.Quality):
-    
 
     def __init__(self):
         print("map equation class defined")
-
 
     def sum_link_weight_to_out(self, w_oneline, node_id_in_same_mod):
         """ find links from a node to nodes belonging to other module
@@ -53,7 +51,7 @@ class Map(ql.Quality):
                 sum_pa_dot_w += pa[node_id-1]*link_weights_to_out
 
             #exit_flow[i_mod] = cf.tau * (n - n_i)/(n - 1) * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall2008 eq.7
-            exit_flow[i_mod] = cf.tau * (n - n_i)/n * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall20010 eq.6
+            exit_flow[i_mod] = cf.tau * (n - n_i)/n * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall2010 eq.6
 
         return exit_flow     
 
@@ -82,7 +80,7 @@ class Map(ql.Quality):
             # summation pa for nodes belonging this module
             sum_pa = 0.0
             for j, id_node in enumerate(nodes_in_this_mod):
-                sum_pa = pa[j]
+                sum_pa = pa[id_node-1]
             term_4 += (exit_flow[i] + sum_pa) * math.log(exit_flow[i] + sum_pa, 2.0)
 
         return term_1 + term_2 + term_3 + term_4
@@ -106,7 +104,6 @@ class Map(ql.Quality):
             return map equation value
             all class for quality evaluation need to have exactly the same name of function
         '''
-
         #print("modules", __modules)
         # skip a module without any node
         mod_to_calc = self.skip_module_without_node(__modules)
@@ -114,7 +111,9 @@ class Map(ql.Quality):
         # calculate exit probability
         exit_flow = self.calc_exit_flow(mod_to_calc, w, p_a)
         #print ("state of exit_flow", exit_flow)
-        print("the number of modules: ", len(exit_flow))
+        print("the number of modules in map equation: ", len(__modules))
+        print("exit_flow length", len(exit_flow))
+        print("pa length", len(p_a))
         code_length = self.calc_two_level_map(mod_to_calc, exit_flow, p_a)
         
         return code_length

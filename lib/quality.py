@@ -15,7 +15,8 @@ class Quality:
             import mapequation as mp
             new_cls = mp.Map
         elif cf.quality_method == 2: # use modularity for communities' quality estimation
-            pass # not implemented yet
+            import modularity as ml
+            new_cls = ml.Modularity
         else:
             print("error: in config.py, undefined number of quality_method was selected.")
             sys.exit(1)
