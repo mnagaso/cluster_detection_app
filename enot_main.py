@@ -17,6 +17,8 @@ sys.path.append('./lib')
 import global_var as gv
 import config as cf
 
+import numpy as np
+
 if __name__ == '__main__':
     ''' call functions by executing order
     '''
@@ -40,6 +42,14 @@ if __name__ == '__main__':
     # gv.W should be normalized (replace with T matrix)
     gv.W = init_p_alpha.T
 
+    # setup seed value for random node-pick order generation
+    if cf.seed_var != 0:
+        np.random.seed(cf.seed_var)
+    else:
+        pass
+
+
+
     # search algorithm for hierarchical mapping starts from here
     if cf.division_type == 1:
         print("\n\n\n")
@@ -48,17 +58,17 @@ if __name__ == '__main__':
         print("#####################################")
         print("\n\n\n")
 
-        import cluster as cl
-        cluster = cl.Cluster(cf.total_nodes, gv.W, gv.P_alpha)
+        import cluster_two_level as ct
+        cluster = ct.Cluster_Two_Level(gv.W, gv.P_alpha)
 
-    elif cf.division_type ==2:
+    elif cf.division_type == 2:
         print("\n\n\n")
         print("#####################################")
         print("## Hierarchal Clustering start     ##")
         print("#####################################")
         print("\n\n\n")
 
-        import cluster as cl
+        import cluster_core as cl
         cluster = cl.Cluster(cf.total_nodes, gv.W, gv.P_alpha)
 
     else:
@@ -66,7 +76,7 @@ if __name__ == '__main__':
         print("prease check the setup of division_type in config.py")
         sys.exit(1)
 
-    print("clustered network: \n", cluster.get_network())
+    print("clustered network: \n", cluster.get_modules())
     # output
     # import csv_export
     # csv_export.export_csv()

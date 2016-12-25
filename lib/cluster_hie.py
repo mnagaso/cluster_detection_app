@@ -58,11 +58,20 @@ class Cluster:
 
         # to count the passes
         pass_count = 0
+        # to count the number of 1st step attempted times
+        attepmt_count = 0
+
         # initial number of modules
         num_modules = len(self.__modules)
         # prepare for marged w matrix and p_a array for generated network
         w_merged = w
         pa_merged = p_a
+
+        # setup seed value for random node-pick order generation
+        if cf.seed_var != 0:
+            np.random.seed(cf.seed_var)
+        else:
+            pass
 
 ######### continue node movement till the code length stops to be improved
         while True:
@@ -78,8 +87,8 @@ class Cluster:
 
             print("### 1st step --- node movement ###")
 
-            for attempt_i in range(cf.attempt_1st_times):
-    
+            #for attempt_i in range(cf.attempt_1st_times):
+            while True:
                 # (re-)generate the random order for picking a node to be moved
                 random_sequence = np.arange(len(pa_merged))
                 np.random.shuffle(random_sequence)
@@ -90,7 +99,7 @@ class Cluster:
                 module_id_to_be_erased = []
     
                 # store ql value for checking its change between each pass
-                ql_pass = ql_now
+                ql_before = ql_now
     
     ############# secondary loop for each node movement
                 for i in range(len(random_sequence)):
@@ -123,7 +132,7 @@ class Cluster:
     ################# thirdly loop for moving a node to neighboring modules
                     for index, mod_id_neigh in enumerate(neighbor_list):
                         # dump the neighbor module object
-                        print ("------- pass: ", pass_count,"attempt: ", attempt_i, "n-th node: ", i," move trial: ", index,"mod_id_neigh: ", mod_id_neigh)
+                        print ("------- pass: ", pass_count,"attempt: ", attempt_count, "n-th node: ", i," move trial: ", index,"mod_id_neigh: ", mod_id_neigh)
                         dump_module = copy.deepcopy(self.__modules[mod_id_neigh - 1])
                         # add nodes to one of neighboring module
                         self.__modules[mod_id_neigh - 1].add_node_multi_temp(node_ids_to_be_moved)
@@ -159,10 +168,6 @@ class Cluster:
                         for j, node_id in enumerate(node_ids_to_be_moved):
                             self.__nodes[node_id-1].set_module_id(dump_mod_id)
     
-                        # store module ids with no member
-                        #module_id_to_be_erased.append(mp_i+1)
-                        #print ("module ids to be erased: ", module_id_to_be_erased)
-                        
                         # update ql value
                         ql_now = ql_min
     
@@ -178,8 +183,20 @@ class Cluster:
                         # for node object
                         for j, node_id in enumerate(node_ids_to_be_moved):
                             self.__nodes[node_id-1].set_module_id(self.__modules[mp_i].get_module_id())
-                
-                print("### pass:", pass_count, ", 1st step end")
+           
+
+                    # exit the search algorithm when the change of quality value became lower than the threshold
+                if QL.check_network_converged(ql_before, ql_now) == True:
+                    print("#########################################")
+                    print("#")
+                    print("# two level clustring algorithm Converged")
+                    print("#")
+                    print("#########################################")
+                    break
+      
+                attempt_count+=1
+
+            print("### pass:", pass_count, ", 1st step end")
     
 
             print("### 2nd step --- reconstruct modules and links ###")
@@ -203,22 +220,9 @@ class Cluster:
 
             print("modules after rename,", self.__modules)
 
-
-
-
-
-
             # merge p_a and w array
             pa_merged, w_merged = self.construct_merge_pa_w_array(w, p_a, pa_merged, w_merged, self.__modules)
-
-            # exit the search algorithm when the change of quality value became lower than the threshold
-            if QL.check_network_converged(ql_pass, ql_now) == True:
-                print("#########################################")
-                print("#")
-                print("# two level clustring algorithm Converged")
-                print("#")
-                print("#########################################")
-                break
+            
             pass_count += 1
 
         # end of community detection

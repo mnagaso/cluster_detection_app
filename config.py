@@ -43,7 +43,7 @@ teleport_type = 2
 tau = 0.15
 
 # method for clustering; 1: map equation, 2: modulity
-quality_method = 1
+quality_method = 2
 
 # community division type; 1: two-level, 2: hierarchial
 division_type = 1
@@ -56,5 +56,7 @@ myfloat = np.float64
 
 # seed number for random node-pick order generation
 # set = 0 for totally random generation
-seed_var = 114514
+seed_var = 1919810 #114514
 
+# set True for modified louvain method (invoke Submodule/Single-node movements in Rosvall_2010 p.22)
+modified_louvain = True
