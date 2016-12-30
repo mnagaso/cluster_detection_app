@@ -96,7 +96,7 @@ class Calc_p_alpha:
         # check if each column of t = 0
         t_col_sum = np.zeros(n,dtype=cf.myfloat)
         t_col_sum = t.sum(axis=0)
-        print ("t_col_sum: ",t_col_sum)
+        #print ("t_col_sum: ",t_col_sum)
     
         return t
     
@@ -138,10 +138,10 @@ class Calc_p_alpha:
             print ("please check your setting in config.py")
             sys.exit(1)
     
-        print ("check if sum over each column of the iterate matrix equals one.")
-        print (func.sum(axis=0))
-        print ("func")
-        print (func)
+        #print ("check if sum over each column of the iterate matrix equals one.")
+        #print (func.sum(axis=0))
+        #print ("func")
+        #print (func)
         
         return func
     
@@ -171,7 +171,7 @@ class Calc_p_alpha:
                     print ("node id: ",i+1," dangling")        
         
         print ("number of dangling node", np.count_nonzero(a))
-        print ("dangling_node_vector",a)
+        #print ("dangling_node_vector",a)
     
         return a
     

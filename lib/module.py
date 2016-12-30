@@ -82,29 +82,25 @@ class Module:
 
     def get_neighbor_list(self, w_to, w_from):
         """ return node(module) list directrly linked from this module"""
-        #print("w_to", w_to)
-        #print("w_from",w_from)
+        
         list_neighbors = []
+        
         # search links
         for i, w_node in enumerate(w_to):
             if w_node != 0:
-                # find module id from node id
-                #module_id = nodes[i].get_module_id()
+                # find module id from w
                 # id count starts 1 but stored at 0-th element of the array
-                #list_neighbors.append(module_id)
                 list_neighbors.append(i+1)
         for i, w_node in enumerate(w_from):
             if w_node != 0:
-                # find module id from node id
-                #module_id = nodes[i].get_module_id()
+                # find module id from w
                 # id count starts 1 but stored at 0-th element of the array
-                #list_neighbors.append(module_id) 
                 list_neighbors.append(i+1)
+        
         # check duplicate items
         seen = set()
         uniq_list_neighbors = [x for x in list_neighbors if x not in seen and not seen.add(x)]
 
-        #print ("id ", self.__module_id, "has neighboring module id ", uniq_list_neighbors)
         return uniq_list_neighbors
 
     def get_module_id(self):

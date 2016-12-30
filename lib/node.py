@@ -8,13 +8,18 @@
 class Node:
     __node_id = -1 # ノードID
     __belongs_to_module_id = -1 # 属するモジュールのID
-    
+    __belongs_to_module_id_onestep_before = -1
+
     def __init__(self, node_id):
-#        print("generate node : " + str(node_id))
         self.__node_id = node_id
 
     def set_module_id(self, module_id):
+        module_id_past = self.__belongs_to_module_id 
         self.__belongs_to_module_id = module_id
+        self.set_module_id_onestep_before(module_id_past)
+
+    def set_module_id_onestep_before(self, module_id_past):
+        self.__belongs_to_module_id_onestep_before = module_id_past
 
     def get_id(self):
         #print (self.__node_id)

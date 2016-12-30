@@ -76,7 +76,7 @@ if __name__ == '__main__':
         print("prease check the setup of division_type in config.py")
         sys.exit(1)
 
-    print("clustered network: \n", cluster.get_modules())
+    print("\n\nclustered network: \n", cluster.get_modules())
     # output
     # import csv_export
     # csv_export.export_csv()

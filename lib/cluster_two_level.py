@@ -25,45 +25,63 @@ import math
 import random
 import copy
 
+import cluster_core as cc
+
 class Cluster_Two_Level:
     __nodes = [] # key: node_id, value: node
     __modules = [] # key: module_id, falue: module
-    
-    minimum_codelength = 0. # theoretical limiti of code length by Shannon's source coding theorem
   
     def __init__(self, w, p_a):
-        # initialize node/module object list
-        self.init_nods_mods(p_a)
-         
-        # invoke clustring for two-level 
-        import cluster_core as cc
-        Two_level = cc.Cluster_Core(w, p_a, self.__nodes, self.__modules)
         
-        self.__nodes = Two_level.get_nodes()
+        # invoke clustring for two-level 
+        Two_level = cc.Cluster_Core(w, p_a)
+        
+        # get clustring results
+        self.__nodes   = Two_level.get_nodes()
         self.__modules = Two_level.get_modules()
         pa_merged, w_merged = Two_level.get_merged_pa_w_array(w, p_a, self.__modules)
 
         print("pa_merged: \n", pa_merged)
         print("w_merged : \n", w_merged)
- 
 
-    def init_nods_mods(self, p_a):
-        number_of_nodes = len(p_a)
-        # calculate uncompressed code length after Shannon's source coding theorem
-        for i, p in enumerate(p_a):
-            self.minimum_codelength -= p*math.log(p, 2.0)
-        print ("minimum code length:  ", self.minimum_codelength, " bits")
- 
-        for node_id in range(1, number_of_nodes+1,1):
-            node = Node(node_id)
-            self.__nodes.append(node)
-            module_id = node_id
-            module = Module(module_id)
-            self.__modules.append(module)
-            # cleating one-node one-module state
-            module.add_node(node)
- 
+        if cf.modified_louvain == True:
+            # invoke submodule movements
+            self.build_network_tree(w, p_a, self.__modules)   
+            # invoke single-node movements
 
+            pass
+
+    def build_network_tree(self, w, p_a, module_list):
+        """ build up a network tree
+            this function continuously try to devide a sub*module and go deeper layer
+        """
+
+        for i, mod in enumerate(module_list):
+                # extract the partial w matrix and pa array
+                w_part, pa_part = self.extract_partial_w_pa(w.tocsr(), p_a, mod)
+                sub_level = cc.Cluster_Core(w_part, pa_part)
+
+                # set node ids to module objects and vice versa
+
+    def extract_partial_w_pa(self, w, p_a, mod_obj):
+        """ extract a partial w matrix and pa array based on nodes belonging to a module
+        """
+        # get node id list
+        node_ids  = mod_obj.get_node_list()
+        num_nodes = len(node_ids)
+        
+        # define partial w/pa matrix
+        w_part  = spa.lil_matrix((num_nodes,num_nodes))
+        pa_part = np.zeros(num_nodes)
+
+        # get values from original w/pa matrix
+        for i in range(num_nodes):
+            for j in range(num_nodes):
+                w_part[i,j] = w[node_ids[i]-1,node_ids[j]-1]
+
+            pa_part[i] = p_a[node_ids[i]-1]
+
+        return w_part, pa_part
 
     def get_modules(self):
         """ get module list

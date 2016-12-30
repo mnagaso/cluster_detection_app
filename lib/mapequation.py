@@ -72,8 +72,10 @@ class Map(ql.Quality):
 
             # 4th term
             nodes_in_this_mod = obj_mod.get_node_list()
+            
             # summation pa for nodes belonging this module
             sum_pa = 0.0
+
             for j, id_node in enumerate(nodes_in_this_mod):
                 sum_pa = pa[id_node-1]
             term_4 += (exit_flow[i] + sum_pa) * math.log(exit_flow[i] + sum_pa, 2.0)
@@ -98,6 +100,7 @@ class Map(ql.Quality):
             return map equation value
             all class for quality evaluation need to have exactly the same name of function
         '''
+
         # skip a module without any node
         mod_to_calc = self.skip_module_without_node(__modules)
         
