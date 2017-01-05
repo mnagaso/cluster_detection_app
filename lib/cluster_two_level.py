@@ -82,6 +82,11 @@ class Cluster_Two_Level:
 
         return w_part, pa_part
 
+    def get_nodes(self):
+        """ get node list
+        """
+        return self.__nodes
+
     def get_modules(self):
         """ get module list
         """
