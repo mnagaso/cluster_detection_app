@@ -76,11 +76,21 @@ if __name__ == '__main__':
         print("prease check the setup of division_type in config.py")
         sys.exit(1)
 
-    print("\n\nclustered network: \n", cluster.get_modules())
+    #print("\n\nclustered network: \n", cluster.get_modules())
+
     # output
+    print("\n\n\n")
+    print("##############################################")
+    print("## Post-processing for visualization start  ##")
+    print("##############################################")
+    print("\n\n\n")
+
+    import json_export as jex
+    jex.json_out(gv.W, cluster.get_nodes(),  cluster.get_modules())
+
     # import csv_export
     # csv_export.export_csv()
     # visualize
-    import visualize_tools as vt
+    #import visualize_tools as vt
     # show W matrix for debug
     # vt.show_matrix(gv.W)

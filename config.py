@@ -16,6 +16,8 @@ import numpy as np
 infile_path = 'data/n24.csv'  
 #infile_path = 'data/n48.csv'  
 
+# node id-name list filename
+vertices_file_path = 'data/n24_vertices.csv'
 
 # total number of nodes in input data
 #total_nodes = 128 

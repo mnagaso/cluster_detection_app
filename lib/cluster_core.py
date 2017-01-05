@@ -30,13 +30,20 @@ class Cluster_Core:
     #__modules = [] # key: module_id, falue: module
     #minimum_codelength = 0. # theoretical limiti of code length by Shannon's source coding theorem
   
-    def __init__(self, w, p_a):
+    def __init__(self, w, p_a, *init_nods_mods):
         self.__nodes = [] # key: node_id, value: node
         self.__modules = [] # key: module_id, falue: module
         self.minimum_codelength = 0. # theoretical limiti of code length by Shannon's source coding theorem
-  
-        # initialize node/module object list
-        self.init_nods_mods(p_a)
+        
+        print("iiinnnttt",init_nods_mods)
+
+        if len(init_nods_mods) == 0:
+            # initialize node/module object list from w and p_a
+            self.init_nods_mods(p_a)
+        else:
+            # start clustering from already separated modules
+            self.__nodes   = init_nods_mods[0]
+            self.__modules = init_nods_mods[1]
        
         # quarity object
         QL = ql.Quality()
@@ -178,10 +185,10 @@ class Cluster_Core:
                 #print("#########################################")
                 
                 break
-
+            
             attempt_count+=1
     
-        #print("### attempt count:", attempt_count, ", 1st step end")
+            print("### attempt count:", attempt_count, ", 1st step end")
 
         #print("modules before rename,", self.__modules)
 
