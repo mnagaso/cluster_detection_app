@@ -29,7 +29,16 @@ def json_out(links ,list_nodes, list_modules):
     #print("hi jason",dict_pre_jsonize)
 
     # output json file
-    f = open("./vis_html/outtest.json", "w")
+    outfolder = "./vis_html/"
+
+    if cf.quality_method == 1: # out result by map equation
+        outfile_header = "result_mapequation.json"
+    elif cf.quality_method == 2: # out result by modularity
+        outfile_header = "result_modularity.json"
+
+    outfile = outfolder + outfile_header
+
+    f = open(outfile, "w")
     json.dump(dict_pre_jsonize, f, sort_keys=True, cls=numpy_object_to_json_compatible
 , ensure_ascii=False)
 

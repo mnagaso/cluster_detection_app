@@ -8,8 +8,6 @@ management clustering data
 here we use modified Louvain method (Rosval2010)
 Louvain method may be refered in Blondel 2008
 
-input                    output
-nodes -> [clustering] -> two level modules
 '''
 
 from node import Node
