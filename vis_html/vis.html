@@ -52,7 +52,7 @@
       // Called when the Visualization API is loaded.
       function draw() {
         // create a network
-        var container = document.getElementById('mapequation_network');
+        
         var options = {
           nodes: {
             scaling: {
@@ -108,6 +108,27 @@
             nodes: parsed.nodes,
             edges: parsed.edges
           };
+          var container = document.getElementById('mapequation_network');
+          network = new vis.Network(container, data, options);
+        });
+
+        readTextFile("result_modularity.json", function(text){
+          var gephiJSON = JSON.parse(text);
+          var parserOptions = {
+            edges: {
+              inheritColors: true
+            },
+            nodes: {
+              fixed: true,
+              parseColor: true
+            }
+          }
+          var parsed = vis.network.convertGephi(gephiJSON, parserOptions);
+          var   data = {
+            nodes: parsed.nodes,
+            edges: parsed.edges
+          };
+          var container = document.getElementById('modularity_network');
           network = new vis.Network(container, data, options);
         });
       }
@@ -129,9 +150,20 @@
   </head>
 
   <body onload="draw()">
-    <div id="mapequation_network">
-      <div class="vis-network" tabindex="900" >
-        <canvas width="2880" height="1116"></canvas>
+    <div class="network">
+      <h1>Mapequation Network</h1>
+      <div id="mapequation_network">
+        <div class="vis-network" tabindex="900" >
+          <canvas width="50%" height="1116"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="network">
+      <h1>Modularity Network</h1>
+      <div id="modularity_network">
+        <div class="vis-network" tabindex="900" >
+          <canvas width="50%" height="1116"></canvas>
+        </div>
       </div>
     </div>
   </body>
