@@ -6,12 +6,14 @@
 
 class Module:
     __module_id = -1 # module ID
-    __belongs_to_module_id = -1 # 属するモジュールのID
+    #__belongs_to_module_id = -1 # 属するモジュールのID
+    __tree_element_id = -1 # an id registered in the tree module
 
     def __init__(self, module_id):
         # print("generate module : " + str(module_id))
         self.__module_id = module_id
         self.__node_id_list = []
+        self.__global_node_id_list = []
 
     def add_node(self, node):
         """ add one node to this module """
@@ -27,10 +29,7 @@ class Module:
     def add_node_temp(self, node_id):
         """ add node method for inside of the loop
             add one node to this module """
-        #node.set_module_id(self.__module_id)
-        #self.__new_node_id_list.append(node.get_id())
         self.__node_id_list.append(node_id)
-        #self.__node_id_list = node.get_id()
 
     def add_node_multi_temp(self, node_list):
         """ add node multi method for inside of the loop
@@ -80,6 +79,22 @@ class Module:
         """return node list"""
         return tuple(self.__node_id_list)
 
+    def set_global_node_id_list(self, id_glo_loc):
+        """ set a global node id list"""
+
+        for i, node in enumerate(self.__node_id_list):
+            #self.__global_node_id_list
+            self.__global_node_id_list.append(id_glo_loc[node-1])
+
+    def get_global_node_id_list(self):
+        """ return a list of global node ids"""
+        
+        if len(self.__global_node_id_list) == 0:
+            return self.__node_id_list
+        else:
+            return self.__global_node_id_list
+
+
     def get_neighbor_list(self, w_to, w_from):
         """ return node(module) list directrly linked from this module"""
         
@@ -107,9 +122,20 @@ class Module:
         """ return id of this module """
         return self.__module_id
 
+    def get_tree_element_id(self):
+        return self.__tree_element_id
+
+    def set_tree_element_id(self, ele_id):
+        self.__tree_element_id = ele_id
+
     def __repr__(self):
         """definition for when this class object is printed
         """
         #return "%s" % (self.__module_id)
         #return "module id %s" % (self.__module_id)
-        return "module id %s, including node %s \n" % (self.__module_id, self.__node_id_list)
+        if len(self.__global_node_id_list) == 0:
+            node_ids = self.__node_id_list
+        else:
+            node_ids = self.__global_node_id_list
+        
+        return "module id %s, including node(global id) %s \n" % (self.__module_id, node_ids)

@@ -33,12 +33,12 @@ class Cluster_Core:
         self.__modules = [] # key: module_id, falue: module
         self.minimum_codelength = 0. # theoretical limiti of code length by Shannon's source coding theorem
         
-        print("iiinnnttt",init_nods_mods)
 
         if len(init_nods_mods) == 0:
             # initialize node/module object list from w and p_a
             self.init_nods_mods(p_a)
         else:
+            print("intial state",init_nods_mods)
             # start clustering from already separated modules
             self.__nodes   = init_nods_mods[0]
             self.__modules = init_nods_mods[1]
@@ -171,7 +171,9 @@ class Cluster_Core:
                     for j, node_id in enumerate(node_ids_to_be_moved):
                         self.__nodes[node_id-1].set_module_id(self.__modules[mp_i].get_module_id())
         
-                print(self.__modules)
+
+                # print for indicate node movement of each step
+                #print(self.__modules)
 
             # exit the search algorithm when the change of quality value became lower than the threshold
             if QL.check_network_converged(ql_before, ql_now) == True:
@@ -203,8 +205,8 @@ class Cluster_Core:
         # rename and sort module id
         self.rename_sort_module_id(self.__modules, self.__nodes)
 
-        print("modules divided:\n", self.__modules)
-
+        # output for division result of this step with local node ids
+        #print("modules divided:\n", self.__modules)
 
         # end of community detection
 
@@ -301,3 +303,9 @@ class Cluster_Core:
         """ get module list
         """
         return self.__modules
+
+#sub_level.set_nodes_global_id(id_glo_loc)
+    def set_nodes_global_id(self, id_glo_loc):
+        for i, mod_obj in enumerate(self.__modules):
+            mod_obj.set_global_node_id_list(id_glo_loc)
+
