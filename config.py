@@ -45,7 +45,7 @@ teleport_type = 2
 tau = 0.15
 
 # method for clustering; 1: map equation, 2: modulity
-quality_method = 2
+quality_method = 1
 
 # community division type; 1: two-level, 2: hierarchial
 division_type = 1
@@ -61,4 +61,4 @@ myfloat = np.float64
 seed_var = 1919810 #114514
 
 # set True for modified louvain method (invoke Submodule/Single-node movements in Rosvall_2010 p.22)
-modified_louvain = False
+modified_louvain = True
