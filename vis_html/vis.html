@@ -37,100 +37,100 @@
           GRAY = 'gray',
           BLACK = '#2B1B17';
 
+      var options = {
+        nodes: {
+          scaling: {
+            min: 160,
+            max: 320
+          }
+        },
+        edges: {
+          color: GRAY,
+          smooth: true
+        },
+        physics:{
+          barnesHut:{gravitationalConstant:-30000},
+          stabilization: {iterations:2500}
+        },
+        groups: {
+          1: {
+            shape: 'triangle',
+            color: '#FF9900' // orange
+          },
+          2: {
+            shape: 'dot',
+            color: "#2B7CE9" // blue
+          },
+          3: {
+            shape: 'square',
+            color: "#5A1E5C" // purple
+          },
+          4: {
+            shape: 'square',
+            color: "#C5000B" // red
+          },
+          5: {
+            shape: 'square',
+            color: "#109618" // green
+          }
+        }
+      };
+
       function readTextFile(file, callback) {
         var rawFile = new XMLHttpRequest();
         rawFile.overrideMimeType("application/json");
         rawFile.open("GET", file, true);
+        var isFinished = false;
         rawFile.onreadystatechange = function() {
-          callback(rawFile.responseText);
-          return;
+          if(isFinished){
+            return;
+          }
+
+          if(rawFile.readyState == 4){
+            callback(rawFile.responseText);
+            isFinished = true;
+          }
         }
         rawFile.send(null);
       }
 
+      function readJson(filename, container_name){
+        readTextFile(filename, function(text){
+          var gephijson = JSON.parse(text);
+          var parseroptions = {
+            edges: {
+              inheritcolors: true
+            },
+            nodes: {
+              fixed: false,
+              parsecolor: false 
+            }
+          }
+          var parsed = vis.network.convertGephi(gephijson, parseroptions);
+          
+          for(var i = 0; i < parsed.nodes.length; i++){
+            parsed.nodes[i].group = parsed.nodes[i].attributes.Module_id;
+            parsed.nodes[i].size = 32;
+            delete parsed.nodes[i].color 
+            console.log(parsed.nodes[i]);
+          }
+
+          var   data = {
+            nodes: parsed.nodes,
+            edges: parsed.edges
+          };
+          var container = document.getElementById(container_name);
+          network = new vis.Network(container, data, options);
+        });
+      }
+
+      
 
       // Called when the Visualization API is loaded.
       function draw() {
         // create a network
-        
-        var options = {
-          nodes: {
-            scaling: {
-              min: 16,
-              max: 32
-            }
-          },
-          edges: {
-            color: GRAY,
-            smooth: true
-          },
-          physics:{
-            barnesHut:{gravitationalConstant:-30000},
-            stabilization: {iterations:2500}
-          },
-          groups: {
-            'switch': {
-              shape: 'triangle',
-              color: '#FF9900' // orange
-            },
-            desktop: {
-              shape: 'dot',
-              color: "#2B7CE9" // blue
-            },
-            mobile: {
-              shape: 'dot',
-              color: "#5A1E5C" // purple
-            },
-            server: {
-              shape: 'square',
-              color: "#C5000B" // red
-            },
-            internet: {
-              shape: 'square',
-              color: "#109618" // green
-            }
-          }
-        };
-       
-        readTextFile("result_mapequation.json", function(text){
-          var gephiJSON = JSON.parse(text);
-          var parserOptions = {
-            edges: {
-              inheritColors: true
-            },
-            nodes: {
-              fixed: true,
-              parseColor: true
-            }
-          }
-          var parsed = vis.network.convertGephi(gephiJSON, parserOptions);
-          var   data = {
-            nodes: parsed.nodes,
-            edges: parsed.edges
-          };
-          var container = document.getElementById('mapequation_network');
-          network = new vis.Network(container, data, options);
-        });
-
-        readTextFile("result_modularity.json", function(text){
-          var gephiJSON = JSON.parse(text);
-          var parserOptions = {
-            edges: {
-              inheritColors: true
-            },
-            nodes: {
-              fixed: true,
-              parseColor: true
-            }
-          }
-          var parsed = vis.network.convertGephi(gephiJSON, parserOptions);
-          var   data = {
-            nodes: parsed.nodes,
-            edges: parsed.edges
-          };
-          var container = document.getElementById('modularity_network');
-          network = new vis.Network(container, data, options);
-        });
+        readJson("result_mapequation.json", "mapequation_network");
+        readJson("result_modularity.json", "modularity_network");
       }
     </script>
     <style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
