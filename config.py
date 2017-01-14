@@ -61,4 +61,4 @@ myfloat = np.float64
 seed_var = 1919810 #114514
 
 # set True for modified louvain method (invoke Submodule/Single-node movements in Rosvall_2010 p.22)
-modified_louvain = True
+modified_louvain = False #True

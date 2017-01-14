@@ -71,9 +71,9 @@ def construct_dict(links, names, list_nodes, list_modules):
                 "label": name,
                 "x": 1,
                 "y": 1,
-                "id": n,
+                "id": n+1,
                 "attributes": {
-                                    "Module_id": list_nodes[n-1].get_module_id()
+                                    "Module_id": list_nodes[n].get_module_id()
                                 },
                 "color": "rgb(0,0,255)",
                 "size": 1

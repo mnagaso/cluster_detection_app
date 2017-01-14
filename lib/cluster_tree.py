@@ -8,9 +8,9 @@ node ids have its local ids which is uniform only in each module
 module_id,     level
 0   ------------ 0
 | \  
-1   2   -------- 1
+1   4   -------- 1
 |\  |\
-3 4 5 6    ----- 2
+2 3 5 6    ----- 2
 
 
 '''
@@ -37,10 +37,10 @@ class Cluster_tree:
             id_previous = -1
             this_id = start_id + i       
 
-            # set an id of next element
+            # set id of next element
             if i != len(module_list)-1:
                 id_next = this_id+1         
-            # set an id of previous element
+            # set id of previous element
             if i != 0:
                 id_previous = this_id-1 
 
@@ -60,6 +60,22 @@ class Cluster_tree:
 
     def get_next_element_id(self):
         return len(self.__modules_tree)
+
+    def print_tree(self):
+        for i, ele in enumerate(self.__modules_tree):
+            print("ele_id:",i,ele, end="")
+
+    def get_leafs(self):
+        """ find leafs (end of a branch) then return those element id
+	"""
+        element_id_of_leafs = []
+
+        for i, ele in enumerate(self.__modules_tree):
+            if len(ele.id_child) == 0:                                                                                                     
+                element_id_of_leafs.append(i)                                                                                           
+            
+
+        return element_id_of_leafs 
 
     def __repr__(self):
         return "state of tree: \n %s"  % self.__modules_tree
@@ -82,7 +98,6 @@ class ele:
             child    = 5,6
             next     = -1 (does not exist)
             previous = 1
-    
     
     """
     def __init__(self, id_parent=-1, id_next=-1, id_previous=-1):
@@ -107,6 +122,11 @@ class ele:
 
     def delete_nodes(self):
         del self.id_nodes[:]
+
+    def tree_watching(self):
+        """ visualize the tree
+        """
+        pass
 
     def __repr__(self):
         """definition for when this class object is printed

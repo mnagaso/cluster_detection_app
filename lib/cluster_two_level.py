@@ -48,10 +48,13 @@ class Cluster_Two_Level:
         #print("w_merged : \n", w_merged) # these merged w/pa may be used for upper move
 
         if cf.modified_louvain == True:
-            # invoke submodule movements
+            # advance division till until no further splits are possible.
             self.build_network_tree(w, p_a, self.__modules)   
-            # invoke single-node movements
-
+ 
+            # single node movement
+               
+            # submodule movements
+            self.submodule_movement(w, p_a, self.__modules)
 
     def build_network_tree(self, w, p_a, module_list):
         """ build up a network tree
@@ -66,7 +69,8 @@ class Cluster_Two_Level:
         # start to extend branches 
         self.one_level_finer(w, p_a, module_list)
 
-        print("final state of tree \n",self.__Tree)
+        print("final state of tree")
+        self.__Tree.print_tree()
 
     def one_level_finer(self, w, p_a, module_list):
         """ this function tries to expand each branch of the tree
@@ -127,6 +131,12 @@ class Cluster_Two_Level:
 
         return w_part, pa_part, id_glo_loc
 
+    def submodule_movement(self, w, p_a, module_list):
+        # find leafs (end of a branch)
+        leaf_list = self.__Tree.get_leafs()
+        print("leafs", leaf_list)
+        # erase one level upper parents of leafs
+
     def get_nodes(self):
         """ get node list
         """
@@ -136,3 +146,4 @@ class Cluster_Two_Level:
         """ get module list
         """
         return self.__modules
+

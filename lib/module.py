@@ -89,7 +89,7 @@ class Module:
     def get_global_node_id_list(self):
         """ return a list of global node ids"""
         
-        if len(self.__global_node_id_list) == 0:
+        if len(self.__global_node_id_list) == 0: # works only for firstly divided modules.
             return self.__node_id_list
         else:
             return self.__global_node_id_list
