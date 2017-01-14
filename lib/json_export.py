@@ -71,7 +71,7 @@ def construct_dict(links, names, list_nodes, list_modules):
                 "label": name,
                 "x": 1,
                 "y": 1,
-                "id": n+1,
+                "id": n,
                 "attributes": {
                                     "Module_id": list_nodes[n].get_module_id()
                                 },
