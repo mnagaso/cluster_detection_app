@@ -94,7 +94,6 @@ class Module:
         else:
             return self.__global_node_id_list
 
-
     def get_neighbor_list(self, w_to, w_from):
         """ return node(module) list directrly linked from this module"""
         

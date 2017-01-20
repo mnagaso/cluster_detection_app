@@ -132,10 +132,13 @@ class Cluster_Two_Level:
         return w_part, pa_part, id_glo_loc
 
     def submodule_movement(self, w, p_a, module_list):
-        # find leafs (end of a branch)
-        leaf_list = self.__Tree.get_leafs()
-        print("leafs", leaf_list)
-        # erase one level upper parents of leafs
+        # invoke a tree traversal and find element groups to be moved
+        ids_parent_of_subtree = self.__Tree.find_subtree_to_be_moved()
+        print(ids_parent_of_subtree)
+        # -> erase the parent and reconstruct the members of parent's parent child members
+        self.__Tree.erase_subtrees(ids_parent_of_subtree[0])
+
+        
 
     def get_nodes(self):
         """ get node list

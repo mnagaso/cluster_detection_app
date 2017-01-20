@@ -20,8 +20,10 @@ def json_out(links ,list_nodes, list_modules):
     """
 
     print("list_moules", list_modules)
-
-    # get name list
+    sort_module_ids(list_nodes,list_modules)
+    print("list_moules re_ordered", list_modules)
+    
+    # read node name list file
     names = get_name_list()
     print(names)
 
@@ -83,8 +85,6 @@ def construct_dict(links, names, list_nodes, list_modules):
     
     pre_json["nodes"] = nodes
 
-
-
     return pre_json
 
 def get_name_list():
@@ -93,7 +93,6 @@ def get_name_list():
     infile_path = cf.vertices_file_path
     print(infile_path)
 
-#
     try:
         f = open(infile_path)
         csv_reader = csv.reader(f)
@@ -115,6 +114,28 @@ def get_name_list():
     names = np.array(names) # convert it to numpy array
     
     return names
+
+def sort_module_ids(node_list, module_list):
+    """
+        this function modifies module ids
+        according to node ids belongind a module
+    """
+    total_num_modules = len(module_list)
+    youngest_ids = []
+    for i, obj_mod in enumerate(module_list):
+        # read youngest ids in each module
+        youngest_ids.append(min(obj_mod.get_global_node_id_list()))
+
+    print(youngest_ids)
+    # reorder
+    new_order = sorted(range(len(youngest_ids)), key=lambda i: youngest_ids[i])
+    print(new_order)
+ 
+    for i, target in enumerate(new_order):
+        new_id = i+1
+        module_list[target].reset_module_id(new_id)
+        for j, node_id in enumerate(module_list[target].get_global_node_id_list()):
+            node_list[node_id-1].set_module_id(new_id)
 
 class numpy_object_to_json_compatible(json.JSONEncoder):
     def default(self, obj):
