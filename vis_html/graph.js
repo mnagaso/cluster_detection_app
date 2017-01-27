@@ -26,28 +26,7 @@ var Graph = function(fileName, containerId){
       barnesHut:{gravitationalConstant:-30000},
       stabilization: {iterations:2500}
     },
-    groups: {
-      1: {
-        shape: 'triangle',
-        color: "#FF9900" // orange
-      },
-      2: {
-        shape: 'dot',
-        color: "#2B7CE9" // blue
-      },
-      3: {
-        shape: 'square',
-        color: "#5A1E5C" // purple
-      },
-      4: {
-        shape: 'square',
-        color: "#C5000B" // red
-      },
-      5: {
-        shape: 'square',
-        color: "#109618" // green
-      }
-    }
+    groups: {}
   }
 }
 
@@ -73,7 +52,7 @@ Graph.prototype = {
     rawFile.send(null);
   },
   readJson: function(filename, containter_name){
-    var options = this.options;
+    var self = this;
     this.readTextFile(filename, function(text){
       var gephijson = JSON.parse(text);
       var parseroptions = {
@@ -87,11 +66,19 @@ Graph.prototype = {
       }
       var parsed = vis.network.convertGephi(gephijson, parseroptions);
       
+      var maxModuleId = 0;
       for(var i = 0; i < parsed.nodes.length; i++){
-        parsed.nodes[i].group = parsed.nodes[i].attributes.Module_id;
+        moduleId = parsed.nodes[i].attributes.Module_id;
+        parsed.nodes[i].group = moduleId;
         parsed.nodes[i].size = 32;
+        if(maxModuleId < moduleId){
+          self.options.groups[moduleId] = {
+            shape: 'dot',
+            color: self.getRandomColor(moduleId)
+          }
+          maxModuleId = moduleId;
+        }
         delete parsed.nodes[i].color 
-        console.log(parsed.nodes[i]);
       }
 
       var   data = {
@@ -99,10 +86,11 @@ Graph.prototype = {
         edges: parsed.edges
       };
       var container = document.getElementById(containter_name);
-      network = new vis.Network(container, data, options);
+      network = new vis.Network(container, data, self.options);
     });
   },
-  getRandomColor: function(){
+  getRandomColor: function(moduleId){
+    Math.seedrandom(moduleId);
     var hue = Math.random();
     var saturation = 1.0;
     var lightness = 0.5;
