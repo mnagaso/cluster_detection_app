@@ -20,7 +20,12 @@ var Graph = function(fileName, containerId){
     },
     edges: {
       color: GRAY,
-      smooth: true
+      smooth: true,
+      arrows: {
+        to: {
+          enabled: true
+        }
+      }
     },
     physics:{
       barnesHut:{gravitationalConstant:-30000},
@@ -80,6 +85,13 @@ Graph.prototype = {
         }
         delete parsed.nodes[i].color 
       }
+
+      for(var i = 0; i < parsed.edges.length; i++){
+        weight = parsed.edges[i].attributes.Weight;
+        parsed.edges[i].width = weight * 30;
+      }
+
+      console.log(parsed.edges);
 
       var   data = {
         nodes: parsed.nodes,
