@@ -12,8 +12,8 @@ import math
 class Modularity(ql.Quality):
     
     def __init__(self):
-        print("modularity class defined")
-
+        #print("modularity class defined")
+        pass
     def get_quality_value(self, __modules, w, p_a):
         ''' *** THIS FUNCTION IS OBLIGATE FOR ALL QUALITY EVALUATION MODULE***
 
@@ -54,7 +54,8 @@ class Modularity(ql.Quality):
             w_in_total  -= w_internal_module
             w_out_total -= w_internal_module
             w_external  += w_in_total*w_out_total
-            
+            #w_external = w_internal*w_external
+
         modularity = w_internal/w_total - w_external/w_total_square
 
         return modularity

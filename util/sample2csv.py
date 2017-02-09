@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     except IndexError:
         print ("Usage: sample2csv.py <arg1> <arg2> <arg3:optional>")
-        print ("arg1 = input file, arg2 = output fileheader")
+        print ("arg1 = input file, arg2 = output name (#fileheader only, exclude extention ie .csv)")
         print ("optional: arg3 = nodes' name list file with the format:")
         print ("1, name1")
         print ("2, name2")
@@ -89,7 +89,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     num_node =  writeOutCsv_edges(arg1, arg2)
-    if generate_namelist == True: # create a node id-name list
+    if generate_namelist == True: # create a node id-name list from arg1
         createOutCsv_vertices(arg2, num_node)
-    else:
+    else: # use a pre-existing id-name file
         convertOutCsv_vertices(arg2, arg3)
