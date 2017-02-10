@@ -11,11 +11,11 @@ dedicated for clustering using "random walker" or "Map Equation".
 
 -------
 #Requirements:
-*scipy
-*numpy
-*numpy
-*cython (optional)
-*ete3 (for tree visualization)
+*scipy  
+*numpy  
+*numpy  
+*cython (optional)  
+*ete3 (for tree visualization)  
 
 
 ##supported python version = 3.5.2
