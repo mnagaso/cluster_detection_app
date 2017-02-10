@@ -12,8 +12,7 @@ dedicated for clustering using "random walker" or "Map Equation".
 -------
 #Requirements:
 *scipy  
-*numpy  
-*numpy  
+*numpy   
 *cython (optional)  
 *ete3 (for tree visualization)  
 
