@@ -17,6 +17,9 @@ class Quality:
         elif cf.quality_method == 2: # use modularity for communities' quality estimation
             import modularity as ml
             new_cls = ml.Modularity
+        #elif cf.quality_method == 3: # example for implementation of an aditional network evaluation method
+        #    import someNewMethod as sn
+        #    new_cls = sn.someNewMethod # the class name of someNewMethod.py
         else:
             print("error: in config.py, undefined number of quality_method was selected.")
             sys.exit(1)
