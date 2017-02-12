@@ -17,7 +17,7 @@ infile_path = 'data/n24.csv'
 #infile_path = 'data/n48.csv'  
 
 # node id-name list filename
-#vertices_file_path = 'data/n24_vertices.csv'
+vertices_file_path = 'data/n24_vertices.csv'
 #vertices_file_path = 'data/n48_vertices.csv'
 
 
@@ -38,7 +38,7 @@ outfile = 'test_out.csv'
 p_conv_threshold = 1.0e-14
 
 # algorithm for calculation of p_alpha; 1 : power method, 2 : arnoldi method
-p_algo_type = 1
+p_algo_type = 2
 
 # type of equation for transient matrix; 1 : standard teleportation, 2 : smart recorded teleportation, 3 : smart unrecorded teleportation. (ref. lambiotte_2012)
 teleport_type = 3
@@ -53,7 +53,7 @@ quality_method = 1
 division_type = 1
 
 # threshold for loop of search algorithm
-threshold_search = 0.000000000000000000000000000000
+threshold_search = 0.#000000000000000000000000000000
 
 # numpy accuracy
 myfloat = np.float64
@@ -63,7 +63,7 @@ myfloat = np.float64
 seed_var = 2#1919810 
 
 # set True for modified louvain method (invoke Submodule/Single-node movements in Rosvall_2010 p.22)
-modified_louvain = True
+modified_louvain = False#True
 
 # how many times, this code tries to extend a branch of each subtree to find a best clustering.
 num_trial = 2

@@ -14,21 +14,20 @@ import scipy.sparse as spa
 
 class Calc_p_alpha:
 
-    def power_method(self,A,n):
+    def power_method(self, A, n):
         ''' here we calculate  
         p_t+1 = A*p_t
         by power method.
         '''
         
         from numpy import linalg as LA
-        #from scipy import linalg as LA
         import time
         time_start = time.time()
     
         p = np.ones((n,1),dtype=cf.myfloat)
         # set initial p_alpha values to 1/total_nodes
         p *= 1./n
-        #print ("check initial p_alpha",p)
+ 
         # read the threshold value for the end of iteration
         threshold = cf.p_conv_threshold 
     
@@ -66,14 +65,21 @@ class Calc_p_alpha:
         #print ("check p_sum normalized: ", p_sum)
         return p/lenP
     
-    def arnoldi_method(self):
-    #    from scipy.sparse.linalg.eigs import eigs
+    def arnoldi_method(self, A, n):
         ''' here we calculate  
         p_t+1 = A*p_t
         by arnoldi method.
         '''
-        pass
-    
+
+        from scipy import sparse
+        import scipy.sparse.linalg as sp_linalg
+
+        vals, vecs = sp_linalg.eigs(A,k=6,which='LM')
+        p = vecs[:,0]
+        lenP = p.sum()
+        
+        return p/lenP
+
     def init_transient_matrix(self, w, n):
         """prepare T (link-weight or hyper link) matrix.
            T is stochastic."""
@@ -176,7 +182,7 @@ class Calc_p_alpha:
         # calculaate w_in_alpha vector
         w_in_alpha = np.zeros(n,dtype=cf.myfloat)
         w_in_alpha = w.sum(axis=1)
-
+ 
         # calculate w_out_alpha vector
         w_out_alpha = np.zeros(n,dtype=cf.myfloat)
         # sum over columns
@@ -194,7 +200,7 @@ class Calc_p_alpha:
                     connecting_node.append(j)
             for j, id_node in enumerate(connecting_node):
                 new_pa[i] += pa[id_node]*w[i,id_node]/w_out_alpha[0,id_node]
-
+            
         return new_pa
 
     def __init__(self, w):
