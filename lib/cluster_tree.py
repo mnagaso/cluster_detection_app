@@ -29,6 +29,9 @@ class Cluster_tree:
         root_id = 0
         self.__modules_tree.append(ele(root_id))
 
+        # value dump for tree indication
+        self.num_str_lines = 0
+
     def add_one_level(self, module_list, id_parent):
         """ add one level to __module_tree
         """
@@ -472,7 +475,7 @@ class Cluster_tree:
 #
 #        return level, path
 
-    def tree_draw_with_ete3(self, root_id):
+    def tree_draw_with_ete3(self, root_id, *ql_val):
         """ this function draw a tree state on terminal screen by ete toolkit (ete3)
         """
         from ete3 import Tree
@@ -486,7 +489,25 @@ class Cluster_tree:
         #print("check str", str_final)
         # draw
         t = Tree(str_final, format=1)
-        print (t.get_ascii(show_internal=True))
+        #print (t.get_ascii(show_internal=True))
+        tree_strings = t.get_ascii(show_internal=True)
+
+        #count "\n" in tree_strings
+        num_line = tree_strings.count('\n') + 1
+        
+        ql_str = '\nql value: ' + str(ql_val)
+
+        erase_line = ''
+        for i in range(self.num_str_lines):
+            erase_line += '\r'
+
+        str_indicate = erase_line + ql_str + tree_strings
+        #print(erase_line,ql_str,tree_strings)
+        print(str_indicate)
+        #sys.stdout.write("%s" % (str_indicate))
+        #sys.stdout.flush()
+
+        self.num_str_lines = num_line
 
     def dfs_for_ete3(self, ele):
         """ this function invoke Depth-first tree search

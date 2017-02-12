@@ -29,7 +29,7 @@ import sys
 import cluster_core as cc
 import cluster_tree as tree
 
-class Cluster_Two_Level:
+class Cluster_Hierarchical:
     __nodes   = []  # store node objects
     __modules = []  # store module objects
   
@@ -44,22 +44,18 @@ class Cluster_Two_Level:
         self.__nodes   = Two_level.get_nodes()
         self.__modules = Two_level.get_modules()
         
-        if cf.modified_louvain == True:
-            print("============================================")
-            print("modified_louvain mode is selected.")
-            print("start recursive modules/submodules division.")
-            print("============================================")
+        #if cf.modified_louvain == True:
+        #    print("============================================")
+        #    print("modified_louvain mode is selected.")
+        #    print("start recursive modules/submodules division.")
+        #    print("============================================")
 
-            #if cf.quality_method == 2:  
-            #    print("modified louvain method takes too much time for modularity")
-            #    pass
-            #else:
-            # get the final quality value
-            ql_first_division = Two_level.get_ql_final()
-            print("ql initi val", ql_first_division)
-            # advance division till no further splits are possible.
-            # then submodule and single node movement are done with Depth-First Searching order.
-            self.build_network_tree(w, p_a, self.__modules, ql_first_division)   
+        # get the final quality value
+        ql_first_division = Two_level.get_ql_final()
+        print("ql initi val", ql_first_division)
+        # advance division till no further splits are possible.
+        # then submodule and single node movement are done with Depth-First Searching order.
+        self.build_network_tree(w, p_a, self.__modules, ql_first_division)   
 
     def build_network_tree(self, w, p_a, module_list, ql_init):
         """ build up a network tree

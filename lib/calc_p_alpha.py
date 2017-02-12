@@ -108,19 +108,15 @@ class Calc_p_alpha:
             # standard teleoprtation
             func = (1. - cf.tau) * t + (cf.tau * 1. / n) * np.ones((n,n)) \
                 + ((1. - cf.tau)) / n * np.tile(d,(n,1))
-        elif cf.teleport_type == 2:
+        elif cf.teleport_type == 2 or cf.teleport_type == 3:
             # smart recorded teleportation
     
-            # calculate w_in_alpha vector
+            # calculaate w_in_alpha vector
             w_in_alpha = np.zeros(n,dtype=cf.myfloat)
-    
-            # sum over rows
             w_in_alpha = w.sum(axis=1)
-            #print ("w in", w_in_alpha)
             
             # prepare w_in matrix
             w_in = np.zeros((n,n),dtype=cf.myfloat)
-    
             for col in range(n):
                 w_in[col,:] = w_in_alpha[col] 
     
@@ -129,10 +125,7 @@ class Calc_p_alpha:
     
             func = (1. - cf.tau) * t + cf.tau * 1. / w_total[0,0] * w_in \
                  + (1. - cf.tau) * 1. / w_total[0,0] * np.einsum('ij,ij->ij',np.asmatrix(w_in_alpha), np.asmatrix(d))
-    
-        elif cf.teleport_type == 3:
-            #smart unrecorded teleportation
-            pass
+
         else:
             print ("selected teleport_type in config.py is not implemented yet.")
             print ("please check your setting in config.py")
@@ -175,6 +168,35 @@ class Calc_p_alpha:
     
         return a
     
+    def re_calculate_p_alpha_unrecorded(self, pa, w, n):
+        """ re calculate p_alpha values from recorded p_alpha"""
+        # define new pa array
+        new_pa = np.zeros(n,dtype=cf.myfloat)
+        
+        # calculaate w_in_alpha vector
+        w_in_alpha = np.zeros(n,dtype=cf.myfloat)
+        w_in_alpha = w.sum(axis=1)
+
+        # calculate w_out_alpha vector
+        w_out_alpha = np.zeros(n,dtype=cf.myfloat)
+        # sum over columns
+        w_out_alpha = w.sum(axis=0)
+
+        # get sum from all elements of w
+        w_total = w_in_alpha.sum(axis=0)
+
+        for i in range(n):
+            
+            # find inflow to node i
+            connecting_node = []
+            for j in range(n):
+                if w[i,j] != 0:
+                    connecting_node.append(j)
+            for j, id_node in enumerate(connecting_node):
+                new_pa[i] += pa[id_node]*w[i,id_node]/w_out_alpha[0,id_node]
+
+        return new_pa
+
     def __init__(self, w):
         # set print mode to indicate all
         #np.set_printoptions(threshold=np.inf)
@@ -205,7 +227,9 @@ class Calc_p_alpha:
             print ("please check your setting in config.py")
             sys.exit(1)
     
-    
+        if cf.teleport_type == 3:
+            self.p_alpha = self.re_calculate_p_alpha_unrecorded(self.p_alpha, w, node_number)
+
         print ("p_alpha")
         print (self.p_alpha.T)
         #return p_alpha

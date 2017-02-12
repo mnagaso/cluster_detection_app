@@ -17,7 +17,7 @@ infile_path = 'data/n24.csv'
 #infile_path = 'data/n48.csv'  
 
 # node id-name list filename
-vertices_file_path = 'data/n24_vertices.csv'
+#vertices_file_path = 'data/n24_vertices.csv'
 #vertices_file_path = 'data/n48_vertices.csv'
 
 
@@ -41,7 +41,7 @@ p_conv_threshold = 1.0e-14
 p_algo_type = 1
 
 # type of equation for transient matrix; 1 : standard teleportation, 2 : smart recorded teleportation, 3 : smart unrecorded teleportation. (ref. lambiotte_2012)
-teleport_type = 2
+teleport_type = 3
 
 # tau: teleportation probability, tau = 1 - d, where d is damping factor
 tau = 0.15

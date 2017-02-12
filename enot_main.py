@@ -64,12 +64,12 @@ if __name__ == '__main__':
     elif cf.division_type == 2:
         print("\n\n\n")
         print("#####################################")
-        print("## Hierarchal Clustering start     ##")
+        print("## Hierarchical Clustering start     ##")
         print("#####################################")
         print("\n\n\n")
 
-        import cluster_core as cl
-        cluster = cl.Cluster(cf.total_nodes, gv.W, gv.P_alpha)
+        import cluster_hierarchical as ch
+        cluster = ch.Cluster(cf.total_nodes, gv.W, gv.P_alpha)
 
     else:
         print("error: the flag type for clustering method is not implemented")
