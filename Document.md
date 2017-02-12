@@ -1,4 +1,4 @@
-クラスタ構造解析アプリケーション(ver0.9)
+# クラスタ構造解析アプリケーション(ver0.9)
 
 ---
 
@@ -7,7 +7,7 @@
 - README.md : セットアップ説明ドキュメント
 - config.py : 設定ファイル
 - enot_main.py : 実行メインスクリプト
-- data/ : 入力データ、出力データ用ディレクトリ
+- data/ : 入力データ用ディレクトリ
 	
 
 # クラスタリング実行方法
@@ -32,6 +32,23 @@ config.py で設定した後に以下のコマンドで実行して下さい。
 	- 1 : Power method
 	- 2 : Arnoldi method
 - p_conv_threshold : Power methodに於けるPαの収束しきい値 (Rosvall(2010)では 1.0e-15)
+- teleport_type : Teleportationのタイプ
+	- 1 : standard teleportation
+	- 2 : smart recorded teleportation
+	- 3 : smart unrecorded teleportation
+- tau : τの値
+- quality_method : 最適化の方法（ここは任意に追加、変更できます。詳しくは"新規手法の導入方法"を御覧ください）
+	- 1 : Map equation
+	- 2 : Modularity
+- division_type : 解析タイプ
+	- 1 : two-level
+	- 2 : 階層化
+- num_trial : 各階層モジュール毎の分割リトライ回数（論文的には100回ですがnode数に合わせて調整した方が現実的と思われます）
+
+### python における設定値（特に調整する必要は無いです）
+- threshold_search : 高精度の計算で0に対応するための設定値
+- myfloat : float の精度
+- seed_var : random node pick のための乱数シード値
 - 
 
 
@@ -49,7 +66,7 @@ config.py で設定した後に以下のコマンドで実行して下さい。
 
 # 新規手法の導入方法
 
-1.quarity.py内の__new__関数内に新たな分岐をつくる
+## 1.quarity.py内の__new__関数内に新たな分岐をつくる
 
 ```
 def __new__(cls):
@@ -67,15 +84,14 @@ def __new__(cls):
    		sys.exit(1)
 ```
 
-2.評価式を実装するモジュール(.py)をlibフォルダ内に作成
+## 2.評価式を実装するモジュール(.py)をlibフォルダ内に作成
 
-実装に求められること:
+### 実装に求められること:
 bool check_network_got_better(self, ql_before, ql_after)
 bool check_network_converged(self, ql_before, ql_after)
 float get_quality_value(self, __modules, w, p_a)
-の３つの関数が必要。
-実際に実装する場合は、util/someNewMethod.pyにサンプルファイルを用意したのでこれを修正、libフォルダに移動して使用する。
-
+の３つの関数が必要です。  
+実際に実装する場合は、util/someNewMethod.pyにサンプルファイルを用意したのでこれを修正、libフォルダに移動して使用します。
 
 ---
 

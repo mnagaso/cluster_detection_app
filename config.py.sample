@@ -40,6 +40,9 @@ quality_method = 1
 # community division type; 1: two-level, 2: hierarchial
 division_type = 1
 
+# how many times, this code tries to extend a branch of each subtree to find a best clustering.
+num_trial = 2
+
 # threshold for loop of search algorithm
 threshold_search = 0.000000000000000000000000000000
 
@@ -53,5 +56,4 @@ seed_var = 2
 # set True for modified louvain method (invoke Submodule/Single-node movements in Rosvall_2010 p.22)
 modified_louvain = True
 
-# how many times, this code tries to extend a branch of each subtree to find a best clustering.
-num_trial = 2
+
