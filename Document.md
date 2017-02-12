@@ -17,12 +17,24 @@ config.py で設定した後に以下のコマンドで実行して下さい。
 ```python enot_main.py
 ```
 
-出力結果は data/ ディレクトリに出力されます。
+出力結果はconfig.pyで指定されたファイルとして出力されます。
 
 ## config.py
 
-- infile_path : 入力データCSV のパス。データフォーマットは遷移の重さで表し、 [from node id, to node id, 遷移重さ] で表現
-- vertices_file_path : 
+- infile_path : 入力データCSV のパス。データフォーマットは遷移の重さで表し、 [source node id, target node id, weight] で表現(Link list format) *
+- infile_directed_type : 入力データの指向性タイプ *
+	- 1 : 指向性
+	- 2 : 無指向性
+- vertices_file_path : ノード名を定義したファイル *
+- total_nodes : 全ノード数 *
+- outfile : 出力ファイル名
+- p_algo_type : Pαの算出方法
+	- 1 : Power method
+	- 2 : Arnoldi method
+- p_conv_threshold : Power methodに於けるPαの収束しきい値 (Rosvall(2010)では 1.0e-15)
+- 
+
+
 
 # 実行結果
 
