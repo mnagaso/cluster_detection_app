@@ -14,8 +14,12 @@
 
 config.py で設定した後に以下のコマンドで実行して下さい。
 
-```python enot_main.py
+
 ```
+python enot_main.py
+
+```
+
 
 出力結果はconfig.pyで指定されたファイルとして出力されます。
 
