@@ -21,12 +21,12 @@ config.py で設定した後に以下のコマンドで実行して下さい。
 
 ## config.py
 
-- infile_path : 入力データCSV のパス。データフォーマットは遷移の重さで表し、 [source node id, target node id, weight] で表現(Link list format) *
-- infile_directed_type : 入力データの指向性タイプ *
+- infile_path : 入力データCSV のパス
+- infile_directed_type : 入力データの指向性タイプ 
 	- 1 : 指向性
 	- 2 : 無指向性
-- vertices_file_path : ノード名を定義したファイル *
-- total_nodes : 全ノード数 *
+- vertices_file_path : ノード名を定義したファイル
+- total_nodes : 全ノード数
 - outfile : 出力ファイル名
 - p_algo_type : Pαの算出方法
 	- 1 : Power method
@@ -49,20 +49,37 @@ config.py で設定した後に以下のコマンドで実行して下さい。
 - threshold_search : 高精度の計算で0に対応するための設定値
 - myfloat : float の精度
 - seed_var : random node pick のための乱数シード値
-- 
+
+## 入力データフォーマット
+
+データフォーマットは遷移の重さで表し、 [source node id, target node id, weight] で表現されています。(Link list format)
 
 
+## 実行結果
 
-# 実行結果
+### 出力ファイル
 
-## 出力ファイル
+tree map format の csv で出力されます。  
+各行は  
+[階層構造, 滞在確率, ノード（モジュール）名, ノード（モジュール）index]  
+となっています。
+
+参考  
+
+```
+# Codelength = 3.48419 bits.
+1:1:1 0.0384615 "7" 6
+1:1:2 0.0384615 "8" 7
+1:1:3 0.0384615 "9" 8
+1:2:1 0.0384615 "4" 3
+1:2:2 0.0384615 "5" 4
+```
 
 
+### 可視化HTML
 
-## 可視化HTML
+最適化の手法 MapEquation と Modurality の解析結果をモジュールごとに色分けしてネットワークをブラウザで確認することが出来ます。各手法で解析を実行した後に vis_html/vis.html を safari か firefox で開いて下さい。（出力結果を読み込む関係で、chromeやIEではセキュリティの制御により表示することが出来ません。）
 
-
-# 入力データフォーマット
 
 # 新規手法の導入方法
 
