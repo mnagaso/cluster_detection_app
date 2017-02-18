@@ -7,8 +7,6 @@ dedicated for clustering using "random walker" or "Map Equation".
 * python base
 * csv in/output support
 
-:banana:
-
 -------
 #Requirements:
 scipy  
