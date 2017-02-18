@@ -71,6 +71,12 @@ python enot_main.py
 
 データフォーマットは遷移の重さで表し、 [source node id, target node id, weight] で表現されています。(Link list format)
 
+```
+1,4,1.01234
+2,1,0.12413
+2,8,0.61241
+...
+```
 
 ### 実行結果
 
