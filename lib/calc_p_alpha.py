@@ -215,7 +215,7 @@ class Calc_p_alpha:
         dangling_node_vector = np.array(node_number,dtype=cf.myfloat)
         dangling_node_vector = self.check_dangling_nodes(w, node_number)
     
-        # prepare transient matrix T (lambiotte 2012 eq.) or S matrix (found google logic)
+        # prepare transient matrix T (lambiotte 2012) or S matrix (found google logic)
         #self.T = spa.lil_matrix((node_number, node_number),dtype=cf.myfloat)
         self.T = self.init_transient_matrix(w, node_number)
     
@@ -223,10 +223,10 @@ class Calc_p_alpha:
         mat_iter = self.get_iterate_matrix(self.T, node_number, w, dangling_node_vector)
     
         # invoke eigen value calculation
-        if cf.p_algo_type == 1:
+        if cf.p_algo_type == 1: # standard teleportation
             print ("p_alpha calculation with power method on going...")
             self.p_alpha = self.power_method(mat_iter, node_number) 
-        elif cf.p_algo_type == 2:
+        elif cf.p_algo_type == 2: # recorded link teleportation
             print ("p_alpha calculation with arnoldi method on going...")
             self.p_alpha = self.arnoldi_method(mat_iter, node_number)
             print("check p_alpha", self.p_alpha)
@@ -235,7 +235,7 @@ class Calc_p_alpha:
             print ("please check your setting in config.py")
             sys.exit(1)
     
-        if cf.teleport_type == 3:
+        if cf.teleport_type == 3: # unrecorded link teleportation
             self.p_alpha = self.re_calculate_p_alpha_unrecorded(self.p_alpha, w, node_number)
 
         self.p_alpha = self.p_alpha.getA1()
