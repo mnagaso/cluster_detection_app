@@ -14,21 +14,31 @@ import numpy as np
 
 import config as cf
 
-def json_out(links ,list_nodes, list_modules):
+def json_out(links, cluster_obj):
     """
         convert nodes/modules object list to json file
     """
+   
+    list_nodes   = cluster_obj.get_nodes()
+    list_modules = cluster_obj.get_modules()
+    tree_obj     = cluster_obj.get_tree()
 
-    print("list_moules", list_modules)
-    sort_module_ids(list_nodes,list_modules)
-    print("list_moules re_ordered", list_modules)
-    
-    # read node name list file
-    names = get_name_list()
-    print(names)
+    if cf.division_type == 1: # two level
+        sort_module_ids(list_nodes,list_modules)
+        # read node name list file
+        names = get_name_list()
+        # make a dict for jsonize
+        dict_pre_jsonize = construct_dict(links, names, list_nodes, list_modules)
+        #print("hi jason",dict_pre_jsonize)
 
-    dict_pre_jsonize = construct_dict(links, names, list_nodes, list_modules)
-    #print("hi jason",dict_pre_jsonize)
+    elif cf.division_type == 2: # hierarchical
+        # generate 
+
+        # read node name list file
+        names = get_name_list()
+
+        dict_pre_jsonize = construct_dict(links, names, tree_obj)
+
 
     # output json file
     outfolder = "./vis_html/"
@@ -41,8 +51,50 @@ def json_out(links ,list_nodes, list_modules):
     outfile = outfolder + outfile_header
 
     f = open(outfile, "w")
-    json.dump(dict_pre_jsonize, f, sort_keys=True, cls=numpy_object_to_json_compatible
-, ensure_ascii=False)
+    json.dump(dict_pre_jsonize, f, sort_keys=True, cls=numpy_object_to_json_compatible, ensure_ascii=False)
+
+def construct_dict_from_tree(links, names, tree_obj):
+    pre_json = {}
+
+    # prepare edges
+    edges = []
+    nonzero_row, nonzero_col = links.nonzero()
+    #print (row,col)
+    for i in range(len(nonzero_row)):
+        one_edge = {
+                "source": nonzero_col[i],
+                "target": nonzero_row[i],
+                "id": i,
+                "attributes": {
+                    "Weight": links[nonzero_row[i],nonzero_col[i]]
+                    },
+                "color": "rgb(229,164,67)",
+                "size": 1
+        }
+        edges.append(one_edge)
+
+    pre_json["edges"] = edges
+
+    # prepare nodes
+    nodes = []
+    for n, name in enumerate(names):
+        one_node = {
+                "label": name,
+                "x": 1,
+                "y": 1,
+                "id": n,
+                #"attributes": {
+                #                    "Module_id": list_nodes[n].get_module_id()
+                #                },
+                "color": "rgb(0,0,255)",
+                "size": 1
+        }
+
+        nodes.append(one_node)
+    
+    pre_json["nodes"] = nodes
+
+    return pre_jso
 
 def construct_dict(links, names, list_nodes, list_modules):
     pre_json = {}
@@ -118,7 +170,7 @@ def get_name_list():
 def sort_module_ids(node_list, module_list):
     """
         this function modifies module ids
-        according to node ids belongind a module
+        according to node ids belonging to a module
     """
     total_num_modules = len(module_list)
     youngest_ids = []
@@ -136,6 +188,10 @@ def sort_module_ids(node_list, module_list):
         module_list[target].reset_module_id(new_id)
         for j, node_id in enumerate(module_list[target].get_global_node_id_list()):
             node_list[node_id-1].set_module_id(new_id)
+
+    # sort orders of modules by module ids
+    module_list.sort(key=lambda x: x.get_module_id(), reverse=False)           
+
 
 class numpy_object_to_json_compatible(json.JSONEncoder):
     def default(self, obj):

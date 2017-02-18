@@ -35,21 +35,21 @@ class Cluster_Hierarchical:
   
     __Tree = tree.Cluster_tree()
 
+    final_store = None
+    ql_global_best = 99999
+
     def __init__(self, w, p_a):
-        
-        # Initially clustring for only two-level is tried 
+        # keep accesses to global w p_a
+        self.glob_w  = w
+        self.glob_pa = p_a
+
+        # Initially clustring for two-levl
         Two_level = cc.Cluster_Core(w, p_a)
         
         # get clustring results
         self.__nodes   = Two_level.get_nodes()
         self.__modules = Two_level.get_modules()
         
-        #if cf.modified_louvain == True:
-        #    print("============================================")
-        #    print("modified_louvain mode is selected.")
-        #    print("start recursive modules/submodules division.")
-        #    print("============================================")
-
         # get the final quality value
         ql_first_division = Two_level.get_ql_final()
         print("ql initi val", ql_first_division)
@@ -57,9 +57,12 @@ class Cluster_Hierarchical:
         # then submodule and single node movement are done with Depth-First Searching order.
         self.build_network_tree(w, p_a, self.__modules, ql_first_division)   
 
-    def build_network_tree(self, w, p_a, module_list, ql_init):
+    def build_network_tree(self, w, p_a, module_list, ql_init=9999):
         """ build up a network tree
         """
+        # initialize quality functions
+        QL = ql.Quality()
+
         # register the initial clustering result to the Tree object
         initial_parent_id = 0
         self.__Tree.add_one_level(module_list, initial_parent_id)
@@ -67,6 +70,9 @@ class Cluster_Hierarchical:
         # indicate the initial tree state
         print("initial state of tree")
         self.__Tree.tree_draw_with_ete3(0)
+        # calculate initial ql value
+        #self.ql_global_best = QL.get_hierarchical_quality_value(self.__Tree.get_tree_list(), self.glob_w, self.glob_pa)
+        print("initial quality value: ", ql_init)
 
         # start of recursive extention of branches 
         self.one_level_finer(w, p_a, initial_parent_id, ql_init)
@@ -91,25 +97,23 @@ class Cluster_Hierarchical:
 
         """
         # initiation
+        QL = ql.Quality()
         loop_count = 0
         ql_best = ql_init
         ql_now = None
         store_tree = copy.deepcopy(self.__Tree.get_tree_list())
 
         while loop_count < cf.num_trial:
+            # for fast conversion
+            if grand_parent_id != 0:
+                loop_count = cf.num_trial
 
             queue_ids = copy.deepcopy(self.__Tree.get_element_object(grand_parent_id).id_child)
-
-            loop_count_in = 0
 
             while queue_ids:
                 # get the parent id of this branch
                 parent_id = queue_ids[0]
                 mod = self.__Tree.tree_ele2one_module(parent_id)
-
-                # to catche irregular situations               
-                if loop_count_in > 100:
-                    sys.exit(1)
 
                 num_nodes = mod.get_num_nodes()
                 if num_nodes == 1: # module with only one member may not be divided anymore
@@ -123,7 +127,9 @@ class Cluster_Hierarchical:
                     sub_level.set_nodes_global_id(id_glo_loc)
                     sub_modules = sub_level.get_modules() 
 
-                    if len(sub_modules) != 1:
+                    if len(sub_modules) == 1 or len(sub_modules) == num_nodes:
+                        pass
+                    else:
                         # get quality value
                         ql_temp = sub_level.get_ql_final()
 
@@ -132,6 +138,10 @@ class Cluster_Hierarchical:
                         self.__Tree.add_one_level(sub_modules, parent_id)
 
                         erased_id = self.one_level_finer(w, p_a, parent_id, ql_temp)
+
+                        # get quality value
+                        #ql_temp = sub_level.get_ql_final()
+                        #ql_temp =  QL.get_hierarchical_quality_value(self.__Tree.get_tree_list(), self.glob_w, self.glob_pa)
 
                         # modify the queue list
                         if erased_id != None:
@@ -143,8 +153,6 @@ class Cluster_Hierarchical:
                 # erase a queue already done
                 queue_ids.pop(0)
                 
-                loop_count_in += 1
-
             # reconstruct module_list from subtree
             node_list, module_list = self.__Tree.subtree2modulelist(grand_parent_id)
 
@@ -152,25 +160,32 @@ class Cluster_Hierarchical:
             ql_now = self.restart_clustering(w, p_a, grand_parent_id)
 
             # if the quality of this subtree is imploved
-            QL = ql.Quality()
             if QL.check_network_got_better(ql_best, ql_now) == True:
                 ql_best = ql_now
                 ## store and replace the state of the entire tree
                 store_tree = copy.deepcopy(self.__Tree.get_tree_list())
+                #self.final_store = copy.deepcopy(self.__Tree.get_tree_list())
+                
             else:
                 # go to the next loop
                 pass
 
             loop_count += 1
 
+            if grand_parent_id == 1: ######## for test
+                ql_global_temp = QL.get_hierarchical_quality_value(self.__Tree.get_tree_list(), self.glob_w, self.glob_pa)
+                if QL.check_network_got_better(self.ql_global_best, ql_global_temp) == True:
+                    self.ql_global_best = ql_global_temp
+                    self.final_store = copy.deepcopy(self.__Tree.get_tree_list())
+
             if grand_parent_id == 0:
                 #print("ql_best", ql_best)
                 #print(store_tree)
-                self.__Tree.tree_draw_with_ete3(0, ql_best)
+                self.__Tree.tree_draw_with_ete3(0, ql_now)
 
             # erase "#" for indicate tree states at each step
             #print( self.__Tree.print_tree())
-            self.__Tree.tree_draw_with_ete3(0, ql_best)
+            #self.__Tree.tree_draw_with_ete3(0, ql_best)
  
         ### end while loop
 
@@ -186,9 +201,12 @@ class Cluster_Hierarchical:
             erased_id = grand_parent_id
         else:
             #print("recursive tree branch extention finished")
-            node_list, module_list = self.__Tree.subtree2modulelist(grand_parent_id)
-            self.__modules = module_list
-            
+            self.__Tree.set_tree_list(self.final_store)
+            #node_list, module_list = self.__Tree.subtree2modulelist(grand_parent_id)
+            #self.__modules = module_list
+            print("global optimized tree")
+            self.__Tree.tree_draw_with_ete3(0, ql_best)
+
             erased_id = None
             #print("ql initial ---> best", ql_init, " ---> ",ql_best)
         return erased_id
@@ -197,6 +215,7 @@ class Cluster_Hierarchical:
         """ restart network division after the state of submodule movement
             and then restart the recursive clustering after
         """
+        QL = ql.Quality()
         #print("##### start re-clustering for node id", parent_id)
         node_list, module_list = self.__Tree.subtree2modulelist(parent_id)
 
@@ -215,7 +234,8 @@ class Cluster_Hierarchical:
         self.__Tree.replace_subtree(parent_id,module_list)
 
         ql_now = restarted_cluster.get_ql_final() 
- 
+        #ql_now = QL.get_hierarchical_quality_value(self.__Tree.get_tree_list(), self.glob_w, self.glob_pa)
+
         return ql_now
 
     def extract_partial_w_pa(self, w, p_a, mod_obj):
@@ -282,22 +302,6 @@ class Cluster_Hierarchical:
         #print("after submodule movement")
         #self.__Tree.print_tree()
 
-
-# !!!! unused for now
-    def submodule_movement(self, w, p_a, module_list):
-        # invoke a tree traversal and find element groups to be moved
-        ids_parent_of_subtree = self.__Tree.find_subtree_to_be_moved()
-        #print("parents to be erased",ids_parent_of_subtree)
-        # -> erase the parent and reconstruct the members of parent's parent child members
-        self.__Tree.erase_subtrees(ids_parent_of_subtree)
-        #print("after submodule movement")
-        self.__Tree.print_tree()
-
-        # then re-find sub-trees and do division again (or multiple times)
-        del ids_parent_of_subtree[:]
-        ids_parent_of_subtree = self.__Tree.find_subtree_to_be_moved()
-        #print("parents to be erased",ids_parent_of_subtree) # <=== these are the subtrees to do division again
- 
     def get_nodes(self):
         """ get node list
         """
@@ -308,3 +312,7 @@ class Cluster_Hierarchical:
         """
         return self.__modules
 
+    def get_tree(self):
+        """ get tree module
+        """
+        return self.__Tree

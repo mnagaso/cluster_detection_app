@@ -75,7 +75,7 @@ class Calc_p_alpha:
         import scipy.sparse.linalg as sp_linalg
 
         vals, vecs = sp_linalg.eigs(A,k=6,which='LM')
-        p = vecs[:,0]
+        p = vecs[:,0].real
         lenP = p.sum()
         
         return p/lenP
@@ -200,8 +200,9 @@ class Calc_p_alpha:
                     connecting_node.append(j)
             for j, id_node in enumerate(connecting_node):
                 new_pa[i] += pa[id_node]*w[i,id_node]/w_out_alpha[0,id_node]
-            
+        
         return new_pa
+        
 
     def __init__(self, w):
         # set print mode to indicate all
@@ -228,6 +229,7 @@ class Calc_p_alpha:
         elif cf.p_algo_type == 2:
             print ("p_alpha calculation with arnoldi method on going...")
             self.p_alpha = self.arnoldi_method(mat_iter, node_number)
+            print("check p_alpha", self.p_alpha)
         else:
             print ("selected p_algo_type in config.py is not implemented yet.")
             print ("please check your setting in config.py")
@@ -236,6 +238,8 @@ class Calc_p_alpha:
         if cf.teleport_type == 3:
             self.p_alpha = self.re_calculate_p_alpha_unrecorded(self.p_alpha, w, node_number)
 
+        self.p_alpha = self.p_alpha.getA1()
+
         print ("p_alpha")
-        print (self.p_alpha.T)
+        print (self.p_alpha)
         #return p_alpha

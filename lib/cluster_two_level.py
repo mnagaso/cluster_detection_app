@@ -32,18 +32,23 @@ import cluster_tree as tree
 class Cluster_Two_Level:
     __nodes   = []  # store node objects
     __modules = []  # store module objects
-  
+
     __Tree = tree.Cluster_tree()
+    ql_final = 0
 
     def __init__(self, w, p_a):
         
-        # Initially clustring for only two-level is tried 
+        # Initially clustring for two-level
         Two_level = cc.Cluster_Core(w, p_a)
         
         # get clustring results
         self.__nodes   = Two_level.get_nodes()
         self.__modules = Two_level.get_modules()
-        
+        # get the final quality value
+        ql_first_division = Two_level.get_ql_final()
+        print("ql initi val", ql_first_division)
+       
+
         if cf.modified_louvain == True:
             print("============================================")
             print("modified_louvain mode is selected.")
@@ -54,12 +59,12 @@ class Cluster_Two_Level:
             #    print("modified louvain method takes too much time for modularity")
             #    pass
             #else:
-            # get the final quality value
-            ql_first_division = Two_level.get_ql_final()
-            print("ql initi val", ql_first_division)
             # advance division till no further splits are possible.
             # then submodule and single node movement are done with Depth-First Searching order.
             self.build_network_tree(w, p_a, self.__modules, ql_first_division)   
+
+        else:
+            self.ql_final = ql_first_division
 
     def build_network_tree(self, w, p_a, module_list, ql_init):
         """ build up a network tree
@@ -70,7 +75,7 @@ class Cluster_Two_Level:
 
         # indicate the initial tree state
         print("initial state of tree")
-        self.__Tree.tree_draw_with_ete3(0)
+        self.__Tree.tree_draw_with_ete3(0,ql_init)
 
         # start of recursive extention of branches 
         self.one_level_finer(w, p_a, initial_parent_id, ql_init)
@@ -101,19 +106,16 @@ class Cluster_Two_Level:
         store_tree = copy.deepcopy(self.__Tree.get_tree_list())
 
         while loop_count < cf.num_trial:
+            # for fast conversion
+            if grand_parent_id != 0:
+                loop_count = cf.num_trial
 
             queue_ids = copy.deepcopy(self.__Tree.get_element_object(grand_parent_id).id_child)
-
-            loop_count_in = 0
 
             while queue_ids:
                 # get the parent id of this branch
                 parent_id = queue_ids[0]
                 mod = self.__Tree.tree_ele2one_module(parent_id)
-
-                # to catche irregular situations               
-                if loop_count_in > 100:
-                    sys.exit(1)
 
                 num_nodes = mod.get_num_nodes()
                 if num_nodes == 1: # module with only one member may not be divided anymore
@@ -127,10 +129,13 @@ class Cluster_Two_Level:
                     sub_level.set_nodes_global_id(id_glo_loc)
                     sub_modules = sub_level.get_modules() 
 
-                    if len(sub_modules) != 1:
+                    if len(sub_modules) == 1 or len(sub_modules) == num_nodes:
+                        pass
+                    else:
                         # get quality value
                         ql_temp = sub_level.get_ql_final()
 
+                        #print(len(sub_modules))
                         # append a branch to the tree
                         # register a new branch
                         self.__Tree.add_one_level(sub_modules, parent_id)
@@ -147,13 +152,11 @@ class Cluster_Two_Level:
                 # erase a queue already done
                 queue_ids.pop(0)
                 
-                loop_count_in += 1
-
-            # reconstruct module_list from subtree
-            node_list, module_list = self.__Tree.subtree2modulelist(grand_parent_id)
 
             # restart clustering
             ql_now = self.restart_clustering(w, p_a, grand_parent_id)
+            # reconstruct module_list from subtree
+            #node_list, module_list = self.__Tree.subtree2modulelist(grand_parent_id)
 
             # if the quality of this subtree is imploved
             QL = ql.Quality()
@@ -170,15 +173,27 @@ class Cluster_Two_Level:
             if grand_parent_id == 0:
                 #print("ql_best", ql_best)
                 #print(store_tree)
-                self.__Tree.tree_draw_with_ete3(0, ql_best)
+                self.__Tree.tree_draw_with_ete3(0, ql_now)
+
+ #               self.__Tree.set_tree_list(store_tree)
+
 
             # erase "#" for indicate tree states at each step
-            #print( self.__Tree.print_tree())
-            self.__Tree.tree_draw_with_ete3(0, ql_best)
+            #pint( self.__Tree.print_tree())
+            #self.__Tree.tree_draw_with_ete3(0, ql_best)
  
         ### end while loop
 
+
+#        print("print before copy")
+#        self.__Tree.tree_draw_with_ete3(0, ql_now)
+
         self.__Tree.set_tree_list(store_tree)
+ 
+#        print("print after copy")
+#        self.__Tree.tree_draw_with_ete3(0, ql_now)
+
+
         # reload the best state of tree
         # sub module movement will be invoked
  
@@ -194,13 +209,16 @@ class Cluster_Two_Level:
             self.__modules = module_list
             
             erased_id = None
-            #print("ql initial ---> best", ql_init, " ---> ",ql_best)
+            print("ql initial ---> best", ql_init, " ---> ",ql_best)
+            self.ql_final = ql_best
+
         return erased_id
 
     def restart_clustering(self, w, p_a, parent_id):
         """ restart network division after the state of submodule movement
             and then restart the recursive clustering after
         """
+
         #print("##### start re-clustering for node id", parent_id)
         node_list, module_list = self.__Tree.subtree2modulelist(parent_id)
 
@@ -312,3 +330,7 @@ class Cluster_Two_Level:
         """
         return self.__modules
 
+    def get_tree(self):
+        """ get tree module
+        """
+        return self.__Tree

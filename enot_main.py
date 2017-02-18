@@ -61,15 +61,16 @@ if __name__ == '__main__':
         import cluster_two_level as ct
         cluster = ct.Cluster_Two_Level(gv.W, gv.P_alpha)
 
+
     elif cf.division_type == 2:
         print("\n\n\n")
         print("#####################################")
-        print("## Hierarchical Clustering start     ##")
+        print("## Hierarchical Clustering start   ##")
         print("#####################################")
         print("\n\n\n")
 
         import cluster_hierarchical as ch
-        cluster = ch.Cluster(cf.total_nodes, gv.W, gv.P_alpha)
+        cluster = ch.Cluster_Hierarchical(gv.W, gv.P_alpha)
 
     else:
         print("error: the flag type for clustering method is not implemented")
@@ -80,17 +81,27 @@ if __name__ == '__main__':
 
     # output
     print("\n\n\n")
-    print("##############################################")
-    print("## Post-processing for visualization start  ##")
-    print("##############################################")
+    print("############################")
+    print("## Post-processing start  ##")
+    print("############################")
     print("\n\n\n")
 
-    import json_export as jex
-    jex.json_out(gv.W, cluster.get_nodes(),  cluster.get_modules())
+    # re-read w matrix for edge indication
+    #gv.W = csim.get_w_from_csv(cf.infile_path, cf.infile_directed_type, cf.total_nodes)
 
-    # import csv_export
-    # csv_export.export_csv()
+    import json_export as jex
+    jex.json_out(gv.W, cluster)
+
+    import csv_export as csx
+    csx.export_csv(gv.P_alpha, cluster)
+    
+ 
     # visualize
+
+    ##########################################################
+    ## debug functions 
+    ## # these function visualize the state of w (link) matrix
+    ##########################################################
     #import visualize_tools as vt
     # show W matrix for debug
     # vt.show_matrix(gv.W)

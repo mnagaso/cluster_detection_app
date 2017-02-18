@@ -59,11 +59,18 @@ class Cluster_tree:
             self.__modules_tree[id_parent].set_child(this_id)
             # add original node ids belonging to this element
             ele_added.set_nodes(obj_mod.get_global_node_id_list())
+
+            # set flows
+            ele_added.set_exit_link(obj_mod.enter_link)
+            ele_added.set_enter_link(obj_mod.exit_link)
+            ele_added.set_internal_link(obj_mod.internal_link)
+            ele_added.set_sum_pa(obj_mod.sum_pa)
+
             # add this element to the tree array
             self.__modules_tree.append(ele_added)
-            # set element id to module object
-            #obj_mod.set_tree_element_id(this_id)
-    
+
+            
+
     def replace_subtree(self, parent_id, module_list):
         """ erase all elements under parent_id then reconstuct entire subtree by module_list"""
         #print(self.__modules_tree)
@@ -82,7 +89,6 @@ class Cluster_tree:
         self.add_one_level(module_list, parent_id)
         #print(self.__modules_tree)
 
-        #print("A")
     def find_ele_under_one_ele(self, ele, sub_ids):
         """ this function invoke Depth-first pre-order tree search
             then returns all elements under
@@ -283,21 +289,21 @@ class Cluster_tree:
         # now node_ids[i] means ==>  i+1: local id in child(this level) module, node_ids[i]: global id
 
         # get global node ids
-        node_global_ids = ele_obj.id_nodes
-        node_global_ids.sort()
-        node_local_ids = []
-        for j, id_glob in enumerate(node_global_ids):
-            node_local_ids.append(id_glo_loc.index(id_glob)+1)
+        #node_global_ids = ele_obj.id_nodes
+        #node_global_ids.sort()
+        #node_local_ids = []
+        #for j, id_glob in enumerate(node_global_ids):
+        #    node_local_ids.append(id_glo_loc.index(id_glob)+1)
 
         #print("node_ids glo loc", node_global_ids, node_local_ids)
 
         one_module = Module(1)
         #one_module.add_node_multi_temp(node_local_ids)
-        one_module.set_global_node_id_list_for_tree(node_global_ids)
+        one_module.set_global_node_id_list_for_tree(id_glo_loc)
         one_module.set_local_node_id_list(id_glo_loc)
- 
-        for i, node_id_glob in enumerate(node_global_ids):
-            one_node = Node(id_glo_loc.index(node_id_glob)+1)
+
+        for i, node_id_glob in enumerate(id_glo_loc):
+            one_node = Node(i+1)
             one_node.set_module_id(1)
             nodes.append(one_node)
             #one_module.add_node_temp(node_count)
@@ -359,122 +365,6 @@ class Cluster_tree:
         #print("nodes modules converted", nodes, "\n",modules)
         return nodes, modules
 
-#    def draw_tree(self):
-#        """ draw a tree on terminal
-#        ex:
-#            .--(0)--.
-#         .-(1)-.  .-(2)-.
-#          
-#        """
-#
-#        level, path = self.bfs(0)
-#        #path.pop(-1) # erase the last "None"
-#        print(path)
-
-#        eles_at_each_level = []
-#
-#
-#        dump_eles = []
-#        for i, ele_id in enumerate(path):
-#            if ele_id != None:
-#                dump_eles.append(ele_id)
-#                print("dumped ele", dump_eles)
-#            elif ele_id == None:
-#                add_eles = copy.deepcopy(dump_eles)
-#                eles_at_each_level.append(add_eles)
-#                del dump_eles[:]
-#
-#        # get max number of id
-#        maxid = len(self.__modules_tree)
-#        digit_limit = int(math.log10(maxid) + 1)
-#        width_one_id = digit_limit+2 # (+num+)
-#
-#        widest_lev = 0
-#        for i, id_list in enumerate(eles_at_each_level):
-#            if widest_lev > len(id_list):
-#                widest_lev = len(id_list)
-#
-#
-#        str_to_write = []
-#        p = '+'
-#        l = '-'
-#        s = ' '
-#        width_this_level = 0
-#        group_lens = []
-#
-#
-#        for ids_this_lev in reversed(eles_at_each_level):
-#            print(ids_this_lev)
-#            num_line = ""
-#            bra_line = ""
-#            count_s_group = 0
-#            group_lens_before = copy.deepcopy(group_lens)
-#            del group_lens[:]
-#
-#            for i, an_id in enumerate(ids_this_lev):
-#                number = " " + str(an_id).zfill(digit_limit) + " "
-#                num_line += number + " "
-#
-#                if i == 0 or self.__modules_tree[an_id].id_previous == -1:
-#                    # insert space
-#                    if len(group_lens_before) != 0:
-#                        offset = group_lens_before[count_s_group]*width_one_id/2 - group
-#                    else:
-#                        offset = 0
-#
-#                    bra_line += s*int(width_one_id/2 + offset)
-#                    num_line += s*int(width_one_id/2 + offset)
-#                
-#
-#                if self.__modules_tree[an_id].id_next != -1:
-#                    bra_line += p
-#                    bra_line += l*int(width_one_id/2+1)
-#                    count_s_group += 1
-#                elif self.__modules_tree[an_id].id_next == -1:  # the end of a small group
-#                    bra_line += p
-#                    bra_line += s*int(width_one_id/2+1)
-#                    count_s_group += 1
-#                    group_lens.append(count_s_group)
-#                    count_s_group = 0
-#
-#            width_former_level = width_this_level
-#            
-#            str_to_write.append(num_line)
-#            str_to_write.append(bra_line)
-#            width_this_level = len(num_line)
-#
-#        for one_line in reversed(str_to_write):
-#            print(one_line)
-#
-#    def build_draw_string(offcet, width):
-#        """ construnct each line of string array for drawing a tree"""
-#        pass
-#
-#    def bfs(self, start_id):
-#        """ """
-#        queue = []
-#        path = []
-#        level = 0
-#        queue.append(start_id)
-#        queue.append(None)
-#
-#        while queue:
-#            #print("queue state", queue)
-#            path.append(queue.pop(0))
-#            node = path[-1]
-#
-#            if node == None:
-#                # this means here is at the end of current level
-#                level += 1
-#                queue.append(None)
-#                if queue[0] == None:
-#                    print("consecutive None found during breadth first search. end of the tree.")
-#                    break
-#            else:
-#                queue.extend(self.__modules_tree[node].id_child)
-#
-#        return level, path
-
     def tree_draw_with_ete3(self, root_id, *ql_val):
         """ this function draw a tree state on terminal screen by ete toolkit (ete3)
         """
@@ -495,11 +385,11 @@ class Cluster_tree:
         #count "\n" in tree_strings
         num_line = tree_strings.count('\n') + 1
         
-        ql_str = '\nql value: ' + str(ql_val)
+        ql_str = "\nql value: " + str(ql_val)
 
-        erase_line = ''
+        erase_line = ""
         for i in range(self.num_str_lines):
-            erase_line += '\r'
+            erase_line += "\r"
 
         str_indicate = erase_line + ql_str + tree_strings
         #print(erase_line,ql_str,tree_strings)
@@ -553,6 +443,8 @@ class Cluster_tree:
 
 class ele:
     """ store the necessary information of each node/element/module of the tree
+        
+    Tree properties::
         this     : id of this element. this value should be strictly accord with the place in self.__modules_tree array
         
         parent   : id of parent element
@@ -580,16 +472,26 @@ class ele:
         2 3 5 6    ----- 2
 
 
+    Flow(link) properties::
+        exit_flow  # sum of out-going links
+        enter_flow # sum of out-coming links
+        total_flow # sum of internal/out-going/out-coming links
+
     """
     def __init__(self, id_this, id_parent=-1, id_next=-1, id_previous=-1):
         self.id_this = id_this
-
         self.id_parent   = id_parent
         self.id_child    = [] # childs will be added when there are generated
         self.id_next     = id_next
         self.id_previous = id_previous
 
         self.id_nodes = []
+
+        self.exit_link     = 0 
+        self.enter_link    = 0
+        self.internal_link = 0
+        #self.total_flow    = 0
+        self.sum_pa        = 0 
 
     def set_parent(self, id_parent):
         self.id_parent = id_parent
@@ -601,11 +503,28 @@ class ele:
         self.id_next = id_next
     def set_previous(self, id_previous):
         self.id_previous = id_previous
+ 
     def set_nodes(self, list_node_ids):
         self.id_nodes = list_node_ids
-    
     def delete_nodes(self):
         del self.id_nodes[:]
+
+    def set_exit_link(self, val):
+        self.exit_link = val
+    def set_enter_link(self, val):
+        self.enter_link = val
+    #def set_total_flow(self, val):
+    #    self.total_flow = val
+    def set_internal_link(self, val):
+        self.internal_link = val
+    def set_sum_pa(self, val):
+        self.sum_pa = val
+
+    def is_leaf(self):
+        if len(self.id_nodes) == 0:
+            return False
+        else:
+            return True
 
     def __repr__(self):
         """definition for when this class object is printed

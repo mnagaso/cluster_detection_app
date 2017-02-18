@@ -15,6 +15,12 @@ class Module:
         self.__node_id_list = []
         self.__global_node_id_list = []
 
+        self.exit_link = 0.
+        self.enter_link = 0.
+        self.internal_link = 0.
+        #self.total_link = 0. # sum of internal/go-out/come-in link weights
+        self.sum_pa = 0.
+
     def add_node(self, node):
         """ add one node to this module """
         node.set_module_id(self.__module_id)
@@ -37,7 +43,6 @@ class Module:
         for i, node_id in enumerate(node_list):
             self.add_node_temp(node_id)
 
-
     def remove_node(self, node):
         """ remove one node from this module """
         #node.set_module_id(-1)
@@ -53,14 +58,7 @@ class Module:
 
     def remove_node_all(self):
         del self.__node_id_list[:]
-
-#    def merge_node_id_lists(self):
-#        """ merge node_id_list and new_node_id_list """
-#        self.__node_id_list.append(__new_node_id_list)
-#        for i, node_id in enumerate(__new_node_id_list):
-#            node
-#        del self.__new_node_id_list
-
+ 
     def reset_module_id(self, new_id):
         """ reset module id """
         self.__module_id = new_id
@@ -89,7 +87,7 @@ class Module:
         self.__global_node_id_list.sort()
 
     def set_local_node_id_list(self, id_glo_loc):
-        """ set a global node id list"""
+        """ set a local node id list"""
         del self.__node_id_list[:]
         
         for id_loc, id_glo_in_list in enumerate(id_glo_loc):
@@ -107,6 +105,13 @@ class Module:
            #self.__global_node_id_list
            self.__global_node_id_list.append(node)
 
+    def set_links_and_pa(self, exit_link, enter_link, inter_link, pa):
+        """ set link values """
+        self.exit_link     = exit_link
+        self.enter_link    = enter_link
+        self.internal_link = inter_link
+        self.sum_pa        = pa
+
     def get_global_node_id_list(self):
         """ return a list of global node ids"""
         
@@ -116,9 +121,9 @@ class Module:
             return self.__global_node_id_list
     
     def get_neighbor_list(self, w, module_list, node_id=-1):
-        """ return module list which has links between this module or specific node"""
+        """ return module list which has links with external modules """
         if node_id != -1:
-            # this function returns module list which has links with the node_id
+            # this function returns module list which has links with one node_id
             nodes_this = [node_id]
         else:
             # this function returns module list which has links with this module
@@ -179,42 +184,10 @@ class Module:
 
         return module_list_final
 
-
-#    def get_neighbor_list(self, w_to, w_from):
-#        """ return node(module) list directrly linked from this module"""
-#        
-#        list_neighbors = []
-#        
-#        # search links
-#        for i, w_node in enumerate(w_to):
-#            if w_node != 0:
-#                # find module id from w
-#                # id count starts 1 but stored at 0-th element of the array
-#                list_neighbors.append(i+1)
-#        for i, w_node in enumerate(w_from):
-#            if w_node != 0:
-#                # find module id from w
-#                # id count starts 1 but stored at 0-th element of the array
-#                list_neighbors.append(i+1)
-#        
-#        # check duplicate items
-#        seen = set()
-#        uniq_list_neighbors = [x for x in list_neighbors if x not in seen and not seen.add(x)]
-#
-#        # now the list is including node_id but module_id
-#
-#        return uniq_list_neighbors
-
     def get_module_id(self):
         """ return id of this module """
         return self.__module_id
-
-    #def get_tree_element_id(self):
-    #    return self.__tree_element_id
-
-    #def set_tree_element_id(self, ele_id):
-    #    self.__tree_element_id = ele_id
-
+ 
     def __repr__(self):
         """ called when this class object is printed
         """

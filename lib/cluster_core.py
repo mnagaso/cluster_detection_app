@@ -118,9 +118,6 @@ class Cluster_Core:
                     # get a list of neighboring module id
                     neighbor_list = self.__modules[mp_i].get_neighbor_list(w_merged, self.__modules, id_node_moved)
 
-                    ### skip the attempt when all nodes are gathered in one module
-                    # because exit flow is not defined in that case
-
                     # remove nodes from its module
                     self.__modules[mp_i].remove_node(id_node_moved)
  
@@ -149,22 +146,23 @@ class Cluster_Core:
 
                         # calculate code length
                         # check if all nodes are in the same module -> in this case map equation is not defined.
-                        num_nodes_in_destination = self.__modules[mod_id_neigh - 1].get_num_nodes()
-                        if num_nodes_in_destination == total_num_nodes:
-                            # return the temporal node movement
-                            self.__modules[mod_id_neigh - 1] = dump_module
-                        else:
-                            ql_trial = QL.get_quality_value(self.__modules, w_merged, pa_merged)
-                            #print ("ql change, minimum_ql ---> this trial node move: ", ql_min, " ---> ",ql_trial)
+                        #num_nodes_in_destination = self.__modules[mod_id_neigh - 1].get_num_nodes()
+#                        if num_nodes_in_destination == total_num_nodes:
+#                            # return the temporal node movement
+#                            self.__modules[mod_id_neigh - 1] = dump_module
+#                        else:
+                        ql_trial = QL.get_quality_value(self.__modules, w_merged, pa_merged)
+                        #print ("ql change, minimum_ql ---> this trial node move: ", ql_min, " ---> ",ql_trial)
 
-                            if QL.check_network_got_better(ql_min, ql_trial) == True: # if the clusting become better
-                                ql_min = ql_trial
-                                dump_mod_id = mod_id_neigh
-                                # return the temporal node movement
-                                self.__modules[mod_id_neigh - 1] = dump_module
-                            else:
-                                # return the temporal node movement
-                                self.__modules[mod_id_neigh - 1] = dump_module
+                        if QL.check_network_got_better(ql_min, ql_trial) == True: # if the clusting become better
+                            ql_min = ql_trial
+                            dump_mod_id = mod_id_neigh
+                            success_dump = copy.deepcopy(self.__modules[mod_id_neigh - 1])
+                            # return the temporal node movement
+                            self.__modules[mod_id_neigh - 1] = copy.deepcopy(dump_module)
+                        else:
+                            # return the temporal node movement
+                            self.__modules[mod_id_neigh - 1] = copy.deepcopy(dump_module)
 
                     # when any ql improvement happened  
                     if QL.check_network_got_better(ql_now, ql_min) == True: 
@@ -174,7 +172,8 @@ class Cluster_Core:
 
                         #print ("check node member before: ", self.__modules[dump_mod_id-1])
                         # add nodes to one of neighboring module
-                        self.__modules[dump_mod_id - 1].add_node_temp(id_node_moved)
+                        #self.__modules[dump_mod_id - 1].add_node_temp(id_node_moved)
+                        self.__modules[dump_mod_id - 1] = copy.deepcopy(success_dump)
                         #print ("check node member after: ", self.__modules[dump_mod_id-1])
                         # add module id to each node object
                         #self.__nodes[id_node_moved-1].set_module_id(dump_mod_id)
@@ -227,6 +226,7 @@ class Cluster_Core:
             # reset number of modules
             num_modules = len(self.__modules)
             # reset total number of nodes
+            total_num_nodes = 0
             for i, mod in enumerate(self.__modules):
                 total_num_nodes += mod.get_num_nodes()
 
@@ -249,9 +249,14 @@ class Cluster_Core:
             #print("modules divided:\n", self.__modules)
 
 
-        #TODO rebuild module list
+        #list_enter_link, list_exit_link, list_internal_link = 
+        
+        # rebuild module list
         del self.__modules[:]
         self.rebuild_module_list(keys_for_node_extract)
+
+        # calculate enter/exit/internal link weights
+        self.sum_link_weight_and_set(w, p_a, self.__modules)       
 
         # end of community detection
 
@@ -268,7 +273,7 @@ class Cluster_Core:
         """ compress nodes in a module as one node
             then return a list:
             
-            list[compressed_node_id] = [included node ids...]
+            key_list[compressed_node_id] = [included node ids...]
             
             -> [[],[],...]
         """
@@ -285,6 +290,7 @@ class Cluster_Core:
             key_list_sub = []
             for j, oneid in enumerate(member_ids):
                 key_list_sub.extend(former_key[oneid-1][:])
+            key_list_sub.sort()
             key_list.append(key_list_sub)
             mod.remove_node_all()
             mod.add_node_temp(i+1)
@@ -304,7 +310,7 @@ class Cluster_Core:
             module_id = node_id
             module = Module(module_id)
             self.__modules.append(module)
-            # cleating one-node one-module state
+            # creating one-node one-module state
             module.add_node(node)
 
     def rename_sort_module_id(self, modules, nodes):
@@ -322,11 +328,18 @@ class Cluster_Core:
             # sort
             obj.sort_node_id_list()
 
-    def get_merged_pa_w_array(self, w_node_base, pa_node_base, modules, key_list):
+    def get_merged_pa_w_array(self, w_node_base, pa_node_base, modules, *key):
         """ this function returns w and pa array, for each module summed over its member nodes
         """
         #pa_merged = np.delete(pa_merged, pa_merged[:], None)
-        
+
+        if len(key) == 0:
+            key_list = []
+            for i in range(len(pa_node_base)):
+                key_list.append([i+1])
+        else:
+            key_list = key[0]              
+
         num_module = len(modules)
 
         # pa list
@@ -348,7 +361,7 @@ class Cluster_Core:
             for j, mod_2 in enumerate(modules):
                 node_list_2 = []
                 for k, node_id in enumerate(mod_2.get_node_list()):
-                    node_list_2.extend(mod_2.get_node_list())
+                    node_list_2.extend(key_list[node_id-1])
                 
                 #if i == j: # this value should be kept because it is self-loops
                     # internal link weights become 0
@@ -365,6 +378,45 @@ class Cluster_Core:
         #print("w_merged  in func: \n", w_merged)
    
         return pa_merged, w_merged
+
+    def sum_link_weight_and_set(self, w_node_base, pa_node_base, modules):
+        """ this function calculates link weights:
+            enter_link   : link weights of entering links
+            exit_link    : link weights of exiting  links
+            internal_link: link weights of internal links
+
+            and
+            total p_a
+
+            ### in hierarchical map equation's case, every values becomes *_flow
+        """
+        pa_merged, w_merged = self.get_merged_pa_w_array(w_node_base, pa_node_base, modules)
+        w_enters = w_merged.sum(axis=1).getA1()
+        w_exits  = w_merged.sum(axis=0).getA1()
+
+        
+        if cf.division_type == 1: # map equation
+            # calculate pa*wa-b and record as *_link
+            #pw_exit, pw_enter, pw_internal = self.calc_pa_dot_w(w_node_base, pa_node_base, modules)
+            for i, mod_obj in enumerate(modules):
+                internal_flow = pa_merged[i] * w_merged[i,i]
+                enter_flow    = 0
+                exit_flow     = 0
+
+                for j, mod_obj2 in enumerate(modules):
+                    if i != j:
+                        enter_flow += pa_merged[j] * w_merged[i,j]
+                        exit_flow  += pa_merged[i] * w_merged[j,i]
+
+                mod_obj.set_links_and_pa(exit_flow, enter_flow, internal_flow, pa_merged[i])
+            
+        elif cf.division_type != 1: # modularity or others
+            for i, mod_obj in enumerate(modules):
+                internal_link = w_merged[i,i]
+                enter_link    = w_enters[i] - internal_link 
+                exit_link     = w_exits[i]  - internal_link
+                mod_obj.set_links_and_pa(exit_link, enter_link, internal_link, pa_merged[i])
+
 
     def get_module_ids_without_node(self, modules):
         """ get module id list which has no member node
