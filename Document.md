@@ -44,7 +44,7 @@ python enot_main.py
         - link weigh(w) をwij = wjiとして、directedと同じアルゴリズムを使用しています。
 - vertices_file_path : ノード名を定義したファイルへのメインディレクトリ(enot_main.pyのある階層)からのパス
 - total_nodes : 総ノード数
-- outfile : 出力ファイル名
+- outfile_path : 出力CSVファイルのパス
 - p_algo_type : 遷移確率の算出方法
 	- 1 : Power method
 	- 2 : Arnoldi method
