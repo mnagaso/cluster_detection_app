@@ -61,7 +61,7 @@ teleport_type = 3
 tau = 0.15
 
 # method for clustering; 1: map equation, 2: modulity
-quality_method = 2
+quality_method = 1
 
 # community division type; 1: two-level, 2: hierarchial
 division_type = 1

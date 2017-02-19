@@ -74,9 +74,9 @@ class Cluster_Two_Level:
         # start of recursive extention of branches 
         self.one_level_finer(w, p_a, initial_parent_id, ql_init)
 
-        print("final state of tree")
+        print("\n\nfinal state of tree")
         #self.__Tree.print_tree()
-        self.__Tree.tree_draw_with_ete3(initial_parent_id)
+        self.__Tree.tree_draw_with_ete3(initial_parent_id, self.ql_final)
 
     def one_level_finer(self, w, p_a, grand_parent_id, ql_init):
         """ this function tries to expand each branch of the tree

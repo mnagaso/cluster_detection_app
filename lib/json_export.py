@@ -18,7 +18,8 @@ def json_out(links, p_a, cluster_obj):
     """
         convert nodes/modules object list to json file
     """
-   
+    print("exporting json file...")
+
     list_nodes   = cluster_obj.get_nodes()
     list_modules = cluster_obj.get_modules()
     tree_obj     = cluster_obj.get_tree()
@@ -193,10 +194,8 @@ def sort_module_ids(node_list, module_list):
         # read youngest ids in each module
         youngest_ids.append(min(obj_mod.get_global_node_id_list()))
 
-    print(youngest_ids)
     # reorder
     new_order = sorted(range(len(youngest_ids)), key=lambda i: youngest_ids[i])
-    print(new_order)
  
     for i, target in enumerate(new_order):
         new_id = i+1

@@ -101,6 +101,13 @@ if __name__ == '__main__':
         # csv export is done at the same time with json export
        
  
+    print("\n\n\n")
+    print("############################")
+    print("## clustering done.       ##")
+    print("############################")
+    print("\n\n\n")
+
+
     # visualize
 
     ##########################################################

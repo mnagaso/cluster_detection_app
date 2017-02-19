@@ -11,6 +11,8 @@ import config as cf
 import json_export as jex
 
 def export_csv_for_hierarchical(member_list, cluster_obj):
+    print("exporting csv file...")
+
     out_filename = cf.outfile_path
     f = open(out_filename, 'w')
     writer = csv.writer(f, lineterminator='\n',delimiter=',',quoting=csv.QUOTE_NONE)
@@ -39,6 +41,7 @@ def export_csv_for_hierarchical(member_list, cluster_obj):
 def export_csv( p_a, cluster_obj):
     """ export clustring result in csv tree format 
     """
+    print("exporting csv file...")
 
     modules  = cluster_obj.get_modules()
     nodes    = cluster_obj.get_nodes()
