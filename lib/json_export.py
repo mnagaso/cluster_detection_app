@@ -14,7 +14,7 @@ import numpy as np
 
 import config as cf
 
-def json_out(links, cluster_obj):
+def json_out(links, p_a, cluster_obj):
     """
         convert nodes/modules object list to json file
     """
@@ -29,15 +29,12 @@ def json_out(links, cluster_obj):
         names = get_name_list()
         # make a dict for jsonize
         dict_pre_jsonize = construct_dict(links, names, list_nodes, list_modules)
-        #print("hi jason",dict_pre_jsonize)
 
     elif cf.division_type == 2: # hierarchical
-        # generate 
-
         # read node name list file
         names = get_name_list()
 
-        dict_pre_jsonize = construct_dict(links, names, tree_obj)
+        dict_pre_jsonize = construct_dict_from_tree(links, p_a, names, tree_obj, cluster_obj)
 
 
     # output json file
@@ -53,7 +50,7 @@ def json_out(links, cluster_obj):
     f = open(outfile, "w")
     json.dump(dict_pre_jsonize, f, sort_keys=True, cls=numpy_object_to_json_compatible, ensure_ascii=False)
 
-def construct_dict_from_tree(links, names, tree_obj):
+def construct_dict_from_tree(links, p_a, names, tree_obj, cluster_obj):
     pre_json = {}
 
     # prepare edges
@@ -76,25 +73,41 @@ def construct_dict_from_tree(links, names, tree_obj):
     pre_json["edges"] = edges
 
     # prepare nodes
+    # set local ids of modules 
+    member_list = tree_obj.set_and_get_element_id_local(p_a, names) 
+    # csv export
+    import csv_export as csx
+    csx.export_csv_for_hierarchical(member_list, cluster_obj)
+
     nodes = []
-    for n, name in enumerate(names):
+    for n, one_line in enumerate(member_list):
+        str_eles = one_line.split(",")
+        glob_id  = str_eles[-1]
+        name     = str_eles[-2]
+
         one_node = {
                 "label": name,
                 "x": 1,
                 "y": 1,
-                "id": n,
-                #"attributes": {
-                #                    "Module_id": list_nodes[n].get_module_id()
-                #                },
+                "id": glob_id,
                 "color": "rgb(0,0,255)",
                 "size": 1
         }
+
+        # prepare here attribute
+        attributes = {}
+        module_ids = str_eles[0].split(":")
+        for i in range(len(module_ids)):
+            tag = "layer " + str(i+1)
+            attributes[tag] = module_ids[i]
+        # then register
+        one_node["attributes"] = attributes
 
         nodes.append(one_node)
     
     pre_json["nodes"] = nodes
 
-    return pre_jso
+    return pre_json
 
 def construct_dict(links, names, list_nodes, list_modules):
     pre_json = {}
@@ -141,9 +154,7 @@ def construct_dict(links, names, list_nodes, list_modules):
 
 def get_name_list():
     # read a node id-name list (***_vertices.csv)
-    #vertices_file_path = 'data/n24_vertices.csv'
     infile_path = cf.vertices_file_path
-    print(infile_path)
 
     try:
         f = open(infile_path)

@@ -438,6 +438,43 @@ class Cluster_tree:
         goback_string += ')'
         return goback_string
 
+    def set_and_get_element_id_local(self, pa, names):
+        """ this function set local ids of tree element 
+            local ids are unique under its parent module    
+            and the index of local id starts from 1 (not 0 like global id of tree element)
+        """
+
+        initial_parent_id = 0
+        id_queue = '1:'
+        list_membership = []
+        self.dfs_for_local_id_set(self.__modules_tree[initial_parent_id], pa, list_membership, id_queue, names)
+
+        return list_membership
+
+    def dfs_for_local_id_set(self, parent_obj, pa, list_member, id_queue, names):
+        """ this function sets local ids for it children 
+        """
+        child_list = []
+        for i, child_id in enumerate(parent_obj.id_child):
+            child_list.append(self.__modules_tree[child_id])
+        # sort orders of modules by pa value
+        child_list.sort(key=lambda x: x.sum_pa, reverse=True)        
+
+        for i, child_obj in enumerate(child_list):
+            target = child_obj
+            child_obj.set_local_id(i+1)
+            new_queue = id_queue + str(i+1)+':'
+            if len(target.id_child) != 0:
+                # gather the child id ex. A,B
+                child_string = self.dfs_for_local_id_set(target, pa, list_member, new_queue, names)
+
+            else: # leaf
+                node_list = target.id_nodes
+                node_list.sort(key=lambda x: pa[x-1], reverse=True)
+                for j, node_id in enumerate(node_list):
+                    dump_queue = new_queue + str(j+1) + ',' + str(pa[node_id-1]) + ',' + names[node_id-1] + ',' + str(node_id)
+                    list_member.append(dump_queue)
+
     def __repr__(self):
         return "state of tree: \n %s"  % self.__modules_tree
 
@@ -479,7 +516,9 @@ class ele:
 
     """
     def __init__(self, id_this, id_parent=-1, id_next=-1, id_previous=-1):
-        self.id_this = id_this
+        self.id_this     = id_this
+        self.id_this_local = 0
+        
         self.id_parent   = id_parent
         self.id_child    = [] # childs will be added when there are generated
         self.id_next     = id_next
@@ -519,6 +558,8 @@ class ele:
         self.internal_link = val
     def set_sum_pa(self, val):
         self.sum_pa = val
+    def set_local_id(self, val):
+        self.id_this_local = val
 
     def is_leaf(self):
         if len(self.id_nodes) == 0:

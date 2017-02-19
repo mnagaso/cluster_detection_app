@@ -15,7 +15,7 @@ Map equation により2階層・多階層へ、Modularity では2階層へのモ
 
 - README.md : セットアップ説明ドキュメント
 - config.py : 設定ファイル
-- enot_main.py : 実行メインスクリプト
+- clustering.py : 実行メインスクリプト
 - data/ : 入力データ用ディレクトリ
 - output_files/ : クラスタリング結果保存用ディレクトリ
 - lib/ : 各種計算用pythonモジュール
@@ -28,7 +28,7 @@ config.py で設定した後に以下のコマンドで実行して下さい。
 
 
 ```
-python enot_main.py
+python clustering.py
 
 ```
 
@@ -42,7 +42,7 @@ python enot_main.py
 	- 1 : 指向性 (directed)
 	- 2 : 無指向性 (undirected) 
         - link weigh(w) をwij = wjiとして、directedと同じアルゴリズムを使用しています。
-- vertices_file_path : ノード名を定義したファイルへのメインディレクトリ(enot_main.pyのある階層)からのパス
+- vertices_file_path : ノード名を定義したファイルへのメインディレクトリ(clustering.pyのある階層)からのパス
 - total_nodes : 総ノード数
 - outfile_path : 出力CSVファイルのパス
 - p_algo_type : 遷移確率の算出方法
@@ -165,6 +165,10 @@ float get_quality_value(self, __modules, w, p_a)
 の３つの関数が必要です。  
 実際に実装する場合は、util/someNewMethod.pyにサンプルファイルを用意したのでこれを修正、libフォルダに移動して使用します。
 
+
+## Cythonの適用について
+計算速度向上を目指し、実験的にpythonモジュール群の一部をC言語化する方法を適用できます。Cythonと呼ばれるライブラリを使用することによってpythonモジュールをC言語化しコンパイルすることで、コードの実行速度を向上します。メインフォルダの中に入ったcompile.shを実行すると、libフォルダ内の一部の.pyモジュールがコンパイルされます。コンパイル対象となるモジュールの指定はメインフォルダ内py2pyx.sh内で指定されています。コンパイル後、通常と同様に`python clusterng.py`により計算を実行します。ネイティブなpythonに戻す場合はdecompile.shを実行することでコンパイルされた実行ファイルの削除、cython化されたモジュールの再度python化が行われます
+。cythonはまだ簡易的な導入しかされていないので、現段階ではあまり速度に目立った差は見られません。しかし今後、pythonモジュール内の配列、関数をcythonに最適化することで100倍のオーダーで高速化が可能です。
 
 ---
 

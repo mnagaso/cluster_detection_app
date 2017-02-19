@@ -10,6 +10,32 @@ import csv, numpy
 import config as cf
 import json_export as jex
 
+def export_csv_for_hierarchical(member_list, cluster_obj):
+    out_filename = cf.outfile_path
+    f = open(out_filename, 'w')
+    writer = csv.writer(f, lineterminator='\n',delimiter=',',quoting=csv.QUOTE_NONE)
+
+    # first line: description about used method
+    str_first = '# quality_method,'
+    str_first += str(cf.quality_method) + ','
+    str_first += 'division_type,' + str(cf.division_type) + ','
+    str_first += 'teleport_type,' + str(cf.teleport_type) + ','
+    str_first += 'modified_louvain,' + str(cf.modified_louvain) + ','
+    if cf.modified_louvain == True or cf.division_type == 2:
+        str_first += 'num_trial,' + str(cf.num_trial) + ','
+    str_first += 'seed_value,' + str(cf.seed_var)
+
+    writer.writerow(str_first.split(","))
+
+    # second line: quality value
+    str_second = "# final quality value: " + str(cluster_obj.ql_global_best)
+    writer.writerow([str_second])
+
+    for i, str_in in enumerate(member_list):
+        writer.writerow(str_in.split(","))
+
+    f.close()
+
 def export_csv( p_a, cluster_obj):
     """ export clustring result in csv tree format 
     """
@@ -23,20 +49,19 @@ def export_csv( p_a, cluster_obj):
 
     out_filename = cf.outfile_path
     f = open(out_filename, 'w')
-    writer = csv.writer(f, lineterminator='\n')
-
+    writer = csv.writer(f, lineterminator='\n',delimiter=',',quoting=csv.QUOTE_NONE)
     # first line: description about used method
-    str_first = '#quality_method '
-    str_first += str(cf.quality_method) + ' '
-    str_first += 'division_type ' + str(cf.division_type) + ' '
-    str_first += 'teleport_type ' + str(cf.teleport_type) + ' '
-    str_first += 'modified_louvain ' + str(cf.modified_louvain) + ' '
+    str_first = '# quality_method,'
+    str_first += str(cf.quality_method) + ','
+    str_first += 'division_type,' + str(cf.division_type) + ','
+    str_first += 'teleport_type,' + str(cf.teleport_type) + ','
+    str_first += 'modified_louvain,' + str(cf.modified_louvain) + ','
     if cf.modified_louvain == True or cf.division_type == 2:
-        str_first += 'num_trial ' + str(cf.num_trial) + ' '
-    str_first += 'seed_value ' + str(cf.seed_var)
+        str_first += 'num_trial,' + str(cf.num_trial) + ','
+    str_first += 'seed_value,' + str(cf.seed_var)
 
-    writer.writerow(str_first.split())
-
+    writer.writerow(str_first.split(",")) 
+    
     # second line: quality value
     str_second = "# final quality value: " + str(cluster_obj.ql_final)
     writer.writerow([str_second])
