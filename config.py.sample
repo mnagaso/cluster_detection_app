@@ -19,7 +19,7 @@ vertices_file_path = 'data/n24_vertices.csv'
 # total number of nodes in input data
 total_nodes = 24
 
-outfile = 'test_out.csv'
+outfile = 'output_files/test_out.csv'
 
 # algorithm for calculation of p_alpha; 1 : power method, 2 : arnoldi method
 p_algo_type = 1
@@ -42,6 +42,9 @@ division_type = 1
 
 # how many times, this code tries to extend a branch of each subtree to find a best clustering.
 num_trial = 2
+
+# if True, we use simple exit/enter flow (Bohlin_mapequation_tutorial eq.9). else if False, the definition of rosvall2010 eq.6 is used.
+simple_flow = False
 
 # threshold for loop of search algorithm
 threshold_search = 0.000000000000000000000000000000
