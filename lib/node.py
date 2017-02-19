@@ -13,11 +13,9 @@ class Node:
         self.__node_id = node_id
 
     def set_module_id(self, module_id):
-        #module_id_past = self.__belongs_to_module_id 
         self.__belongs_to_module_id = module_id
 
     def get_id(self):
-        #print (self.__node_id)
         return self.__node_id
 
     def get_module_id(self):

@@ -24,7 +24,7 @@ import math
 import random
 import copy
 import sys
-#sys.setrecursionlimit(10000)
+#sys.setrecursionlimit(10000) # set this value to huge when the default limit is not enough
 
 import cluster_core as cc
 import cluster_tree as tree
@@ -55,12 +55,6 @@ class Cluster_Two_Level:
             print("start recursive modules/submodules division.")
             print("============================================")
 
-            #if cf.quality_method == 2:  
-            #    print("modified louvain method takes too much time for modularity")
-            #    pass
-            #else:
-            # advance division till no further splits are possible.
-            # then submodule and single node movement are done with Depth-First Searching order.
             self.build_network_tree(w, p_a, self.__modules, ql_first_division)   
 
         else:
@@ -135,7 +129,6 @@ class Cluster_Two_Level:
                         # get quality value
                         ql_temp = sub_level.get_ql_final()
 
-                        #print(len(sub_modules))
                         # append a branch to the tree
                         # register a new branch
                         self.__Tree.add_one_level(sub_modules, parent_id)
@@ -155,8 +148,6 @@ class Cluster_Two_Level:
 
             # restart clustering
             ql_now = self.restart_clustering(w, p_a, grand_parent_id)
-            # reconstruct module_list from subtree
-            #node_list, module_list = self.__Tree.subtree2modulelist(grand_parent_id)
 
             # if the quality of this subtree is imploved
             QL = ql.Quality()
@@ -171,12 +162,7 @@ class Cluster_Two_Level:
             loop_count += 1
 
             if grand_parent_id == 0:
-                #print("ql_best", ql_best)
-                #print(store_tree)
                 self.__Tree.tree_draw_with_ete3(0, ql_now)
-
- #               self.__Tree.set_tree_list(store_tree)
-
 
             # erase "#" for indicate tree states at each step
             #pint( self.__Tree.print_tree())
@@ -184,27 +170,15 @@ class Cluster_Two_Level:
  
         ### end while loop
 
-
-#        print("print before copy")
-#        self.__Tree.tree_draw_with_ete3(0, ql_now)
-
-        self.__Tree.set_tree_list(store_tree)
- 
-#        print("print after copy")
-#        self.__Tree.tree_draw_with_ete3(0, ql_now)
-
-
         # reload the best state of tree
-        # sub module movement will be invoked
- 
+        self.__Tree.set_tree_list(store_tree)
+
         # when extention for one subtree stoped (need to )
         if grand_parent_id != 0:
-            #print("finish all branches of this subtree finished")
-            #print("id", grand_parent_id, "will be erased")
+            # erase the parent and send all modules to 1 level upper
             self.submodule_movement_onesubtree(grand_parent_id)
             erased_id = grand_parent_id
         else:
-            #print("recursive tree branch extention finished")
             node_list, module_list = self.__Tree.subtree2modulelist(grand_parent_id)
             self.__modules = module_list
             
@@ -219,19 +193,15 @@ class Cluster_Two_Level:
             and then restart the recursive clustering after
         """
 
-        #print("##### start re-clustering for node id", parent_id)
         node_list, module_list = self.__Tree.subtree2modulelist(parent_id)
 
-        #print("##### module list before\n",module_list)
         w_part, pa_part, id_glo_loc = self.extract_partial_w_pa(w.tocsr(), p_a, module_list)
-        #print("##### w_part pa_part check", w_part, pa_part, id_glo_loc)
 
         # restart clustering from this state
         restarted_cluster = cc.Cluster_Core(w_part, pa_part, node_list, module_list)
         # take new state of module list
         module_list = restarted_cluster.get_modules()
         restarted_cluster.set_nodes_global_id(id_glo_loc)
-        #print("##### module list after\n",module_list)
         
         #modify the tree composition
         self.__Tree.replace_subtree(parent_id,module_list)
@@ -247,7 +217,6 @@ class Cluster_Two_Level:
         if isinstance(mod_obj, list) == False: #if input only one module 
             # get node id list
             node_ids  = mod_obj.get_global_node_id_list()
-            #print("node ids",node_ids)
             num_nodes = len(node_ids)
 
             # prepare node_id_parent <-> node_id_child list
@@ -263,7 +232,6 @@ class Cluster_Two_Level:
                     w_part[i,j] = w[node_ids[i]-1,node_ids[j]-1]
 
                 pa_part[i] = p_a[node_ids[i]-1]
-                #print("i, node_ids", i, node_ids[i])
                 id_glo_loc[i] = node_ids[i] # i+1: local id in child(this level) module, node_ids[i]: global id
 
         else: # manage multiple module objects
@@ -271,7 +239,6 @@ class Cluster_Two_Level:
             for i, mod in enumerate(mod_obj):
                 # get node id list
                 node_ids_pre.extend(mod.get_global_node_id_list())
-                #print("node ids",node_ids_pre)
             
             # eliminate duplicated ids
             seen = set()
@@ -293,7 +260,6 @@ class Cluster_Two_Level:
                     w_part[i,j] = w[node_ids[i]-1,node_ids[j]-1]
 
                 pa_part[i] = p_a[node_ids[i]-1]
-                #print("i, node_ids", i, node_ids[i])
                 id_glo_loc[i] = node_ids[i] # i+1: local id in child(this level) module, node_ids[i]: global id
 
         return w_part, pa_part, id_glo_loc
@@ -301,25 +267,7 @@ class Cluster_Two_Level:
     def submodule_movement_onesubtree(self, parent_id):
         # -> erase the parent and reconstruct the members of parent's parent child members
         self.__Tree.erase_subtrees(parent_id)
-        #print("after submodule movement")
-        #self.__Tree.print_tree()
 
-
-# !!!! unused for now
-    def submodule_movement(self, w, p_a, module_list):
-        # invoke a tree traversal and find element groups to be moved
-        ids_parent_of_subtree = self.__Tree.find_subtree_to_be_moved()
-        #print("parents to be erased",ids_parent_of_subtree)
-        # -> erase the parent and reconstruct the members of parent's parent child members
-        self.__Tree.erase_subtrees(ids_parent_of_subtree)
-        #print("after submodule movement")
-        self.__Tree.print_tree()
-
-        # then re-find sub-trees and do division again (or multiple times)
-        del ids_parent_of_subtree[:]
-        ids_parent_of_subtree = self.__Tree.find_subtree_to_be_moved()
-        #print("parents to be erased",ids_parent_of_subtree) # <=== these are the subtrees to do division again
- 
     def get_nodes(self):
         """ get node list
         """

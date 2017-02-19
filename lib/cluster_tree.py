@@ -73,7 +73,6 @@ class Cluster_tree:
 
     def replace_subtree(self, parent_id, module_list):
         """ erase all elements under parent_id then reconstuct entire subtree by module_list"""
-        #print(self.__modules_tree)
         # erase subtree
         ## list up all elements under parent_id (only parent_id will be kept)
         ids_to_be_erased = []
@@ -83,11 +82,9 @@ class Cluster_tree:
         ## erase all then reset element ids
         self.erase_eles_multi(ids_to_be_erased) 
         del self.__modules_tree[parent_id].id_child[:]
-        #print(self.__modules_tree)
 
         # reconstruct a subtree
         self.add_one_level(module_list, parent_id)
-        #print(self.__modules_tree)
 
     def find_ele_under_one_ele(self, ele, sub_ids):
         """ this function invoke Depth-first pre-order tree search
@@ -97,7 +94,6 @@ class Cluster_tree:
         sub_ids.append(ele.id_this)
 
         for i, child in enumerate(ele.id_child):
-            #print("think about", child)
             target = self.__modules_tree[child]
             self.find_ele_under_one_ele(target,sub_ids)
 
@@ -136,7 +132,6 @@ class Cluster_tree:
         root = self.__modules_tree[0]
         self.preorder(root,sub_ids)
 
-        #print("found sub trees",sub_ids)
         return sub_ids
 
     def preorder(self, ele, sub_ids):
@@ -147,7 +142,6 @@ class Cluster_tree:
         go_deeper_count = 0
 
         for i, child in enumerate(ele.id_child):
-            #print("think about", child)
             target = self.__modules_tree[child]
             if len(target.id_child) != 0:
                 self.preorder(target,sub_ids)
@@ -179,12 +173,8 @@ class Cluster_tree:
             id_next      = self.__modules_tree[id_parent_to_be_erased].id_next
             id_children = [] # list requires initializing
             id_children.extend(self.__modules_tree[id_parent_to_be_erased].id_child[:])
-  
-            #print("id:",id_parent_to_be_erased, "is erased")
-            #print("id_children", id_children)
  
             for j, id_child in enumerate(id_children):
-                #print("child", id_child)
                 # children join to its parent's group
                 self.__modules_tree[id_child].set_parent(grand_parent)
                 # set grand parent's child ids
@@ -207,8 +197,6 @@ class Cluster_tree:
             # reset id numbers for all elements after erased id
             self.reset_ids(id_parent_to_be_erased)
 
-            #print("state tree,\n", self.__modules_tree)
-
     def erase_eles_multi(self, ele_ids):
         """ erase multiple elements then re-assigne element ids """
         
@@ -225,14 +213,14 @@ class Cluster_tree:
 
     def reset_ids(self, erased_id):
         for i, ele in enumerate(self.__modules_tree):
-            if ele.id_this > erased_id:
-                ele.id_this -= 1
+            if ele.id_this      > erased_id:
+                ele.id_this     -= 1
             if ele.id_parent > erased_id:
-                ele.id_parent -= 1
-            if ele.id_previous > erased_id:
+                ele.id_parent   -= 1
+            if ele.id_previous  > erased_id:
                 ele.id_previous -= 1
-            if ele.id_next > erased_id:
-                ele.id_next -= 1
+            if ele.id_next      > erased_id:
+                ele.id_next     -= 1
             
             modified_children = []
             for i, child in enumerate(ele.id_child):
@@ -244,7 +232,6 @@ class Cluster_tree:
             del(ele.id_child[:])
             ele.set_childs_at_once(modified_children[:])
         
-
     def get_element_object(self, ele_id):
         if isinstance(ele_id, int):
             return self.__modules_tree[ele_id]
@@ -272,33 +259,17 @@ class Cluster_tree:
         ele_obj = self.__modules_tree[ele_id]
         node_count = 1
 
-
         # store global node ids then create local_id <-> global_id list
         store_global_ids = ele_obj.id_nodes
         if len(store_global_ids) == 0:
             print("tree element with no node member was tried to be converted to module object")
             sys.exit(1)
 
-        #print("store_global_ids before seen", store_global_ids)
-
         # eliminate duplicated ids
-        #seen = set()
-        #id_glo_loc = [x for x in store_global_ids if x not in seen and not seen.add(x)]
         id_glo_loc = store_global_ids
         id_glo_loc.sort()
-        # now node_ids[i] means ==>  i+1: local id in child(this level) module, node_ids[i]: global id
-
-        # get global node ids
-        #node_global_ids = ele_obj.id_nodes
-        #node_global_ids.sort()
-        #node_local_ids = []
-        #for j, id_glob in enumerate(node_global_ids):
-        #    node_local_ids.append(id_glo_loc.index(id_glob)+1)
-
-        #print("node_ids glo loc", node_global_ids, node_local_ids)
 
         one_module = Module(1)
-        #one_module.add_node_multi_temp(node_local_ids)
         one_module.set_global_node_id_list_for_tree(id_glo_loc)
         one_module.set_local_node_id_list(id_glo_loc)
 
@@ -306,24 +277,17 @@ class Cluster_tree:
             one_node = Node(i+1)
             one_node.set_module_id(1)
             nodes.append(one_node)
-            #one_module.add_node_temp(node_count)
-            #node_count += 1
 
-        #return nodes, one_module
-        #print("module check", one_module)
         return one_module
 
     def subtree2modulelist(self, parent_id):
         from module import Module
         from node   import Node
-        #print("ele id ", parent_id, "will be converted to modules id")
 
         nodes = []
         modules = []
         parent_tree_ele = self.__modules_tree[parent_id]
         child_tree_ele  = self.get_element_object(parent_tree_ele.id_child)
-
-        #node_count = 1
 
         # store global node ids then create local_id <-> global_id list
         store_glob_ids = []
@@ -338,7 +302,6 @@ class Cluster_tree:
         seen = set()
         id_glo_loc = [x for x in store_glob_ids if x not in seen and not seen.add(x)]
         id_glo_loc.sort()
-        # now node_ids[i] means ==>  i+1: local id in child(this level) module, node_ids[i]: global id
 
 
         for i, tree_ele in enumerate(child_tree_ele):
@@ -350,7 +313,6 @@ class Cluster_tree:
                 node_local_ids.append(id_glo_loc.index(id_glob)+1)
 
             one_module = Module(i+1)
-            #one_module.add_node_multi_temp(node_local_ids)
             one_module.set_global_node_id_list_for_tree(node_global_ids)
             one_module.set_local_node_id_list(id_glo_loc)   
 
@@ -358,11 +320,9 @@ class Cluster_tree:
                 one_node = Node(id_glo_loc.index(node_id_glob)+1)
                 one_node.set_module_id(i+1)
                 nodes.append(one_node)
-                #one_module.add_node_temp(node_count)
-                #node_count += 1
 
             modules.append(one_module)
-        #print("nodes modules converted", nodes, "\n",modules)
+ 
         return nodes, modules
 
     def tree_draw_with_ete3(self, root_id, *ql_val):
@@ -376,10 +336,8 @@ class Cluster_tree:
 
         str_final = str_for_ete3 +';'
 
-        #print("check str", str_final)
         # draw
         t = Tree(str_final, format=1)
-        #print (t.get_ascii(show_internal=True))
         tree_strings = t.get_ascii(show_internal=True)
 
         #count "\n" in tree_strings
@@ -410,7 +368,6 @@ class Cluster_tree:
         goback_string = '('
 
         for i, child in enumerate(ele.id_child):
-            #print("think about", child)
             target = self.__modules_tree[child]
             if len(target.id_child) != 0:
                 # gather the child id ex. A,B
@@ -529,7 +486,6 @@ class ele:
         self.exit_link     = 0 
         self.enter_link    = 0
         self.internal_link = 0
-        #self.total_flow    = 0
         self.sum_pa        = 0 
 
     def set_parent(self, id_parent):
@@ -552,8 +508,6 @@ class ele:
         self.exit_link = val
     def set_enter_link(self, val):
         self.enter_link = val
-    #def set_total_flow(self, val):
-    #    self.total_flow = val
     def set_internal_link(self, val):
         self.internal_link = val
     def set_sum_pa(self, val):

@@ -19,6 +19,7 @@ infile_path = 'data/n24.csv'
 #infile_path = 'data/n48.csv'  
 #infile_path = 'data/fs_flow.csv'
 #infile_path = 'data/fs_sink.csv'
+#infile_path = 'data/n50_hie.csv'
 
 # node id-name list filename
 #vertices_file_path = 'data/debug_no_dangling_vertices.csv'
@@ -28,6 +29,7 @@ vertices_file_path = 'data/n24_vertices.csv'
 #vertices_file_path = 'data/n48_vertices.csv'
 #vertices_file_path = 'data/fs_flow_vertices.csv'
 #vertices_file_path = 'data/fs_sink_vertices.csv'
+#vertices_file_path = 'data/n50_hie_vertices.csv'
 
 
 # total number of nodes in input data
@@ -38,6 +40,7 @@ vertices_file_path = 'data/n24_vertices.csv'
 total_nodes = 24
 #total_nodes = 48
 #total_nodes = 16
+#total_nodes = 50
 
 infile_directed_type = 1 # 1 : directed, 2 : undirected
 
@@ -61,7 +64,7 @@ tau = 0.15
 quality_method = 1
 
 # community division type; 1: two-level, 2: hierarchial
-division_type = 2
+division_type = 1
 
 # threshold for loop of search algorithm
 threshold_search = 0.000000000000000000000000000000
@@ -74,10 +77,10 @@ myfloat = np.float64
 seed_var = 1111#1919810 
 
 # set True for modified louvain method (invoke Submodule/Single-node movements in Rosvall_2010 p.22)
-modified_louvain =False#True
+modified_louvain =True
 
 # how many times, this code tries to extend a branch of each subtree to find a best clustering.
 num_trial = 3
 
 # if True, we use simple exit/enter flow (Bohlin_mapequation_tutorial eq.9). else if False, the definition of rosvall2010 eq.6 is used.
-simple_flow = False#True
+#simple_flow = False#True

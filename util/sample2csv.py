@@ -39,6 +39,9 @@ def writeOutCsv_edges(infile,outheader):
             elif id_from > max_id:
                 max_id = id_from
 
+            # for hierarchical sample data
+            if len(newline) == 2:
+                newline.append(1)
 
             writer.writerow(newline)
             count+=1

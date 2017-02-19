@@ -77,9 +77,11 @@ def export_csv( p_a, cluster_obj):
                 global_id = node_id
                 local_id  = j+1
                 one_line = []
-                one_line.append(1) # add 1 to adjust the tree format of infomap
-                one_line.append(mod.get_module_id())
-                one_line.append(local_id)
+                #one_line.append(1) # add 1 to adjust the tree format of infomap
+                #one_line.append(mod.get_module_id())
+                #one_line.append(local_id)
+                str_member = '1:'+str(mod.get_module_id()) + ':' + str(local_id)
+                one_line.append(str_member)
                 one_line.append(p_a[global_id-1])
                 one_line.append(node_names[global_id-1])
                 one_line.append(global_id)

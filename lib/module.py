@@ -5,27 +5,23 @@
 '''
 
 class Module:
-    __module_id = -1 # module ID
-    #__belongs_to_module_id = -1 # 属するモジュールのID
-    #__tree_element_id = -1 # an id registered in the tree module
 
     def __init__(self, module_id):
-        # print("generate module : " + str(module_id))
-        self.__module_id = module_id
-        self.__node_id_list = []
-        self.__global_node_id_list = []
+        self.__module_id = module_id    # local module id
+        self.__node_id_list = []        # local  ids of member nodes
+        self.__global_node_id_list = [] # global ids of member nodes
 
-        self.exit_link = 0.
+        # sum of out-going/in-coming/internal link weights
+        self.exit_link = 0. 
         self.enter_link = 0.
         self.internal_link = 0.
-        #self.total_link = 0. # sum of internal/go-out/come-in link weights
+        #self.total_link = 0. 
         self.sum_pa = 0.
 
     def add_node(self, node):
         """ add one node to this module """
         node.set_module_id(self.__module_id)
         self.__node_id_list.append(node.get_id())
-        #self.__node_id_list = node.get_id()
 
     def add_node_multi(self, node_list):
         """ add multiple nodes to a module """
@@ -45,7 +41,6 @@ class Module:
 
     def remove_node(self, node):
         """ remove one node from this module """
-        #node.set_module_id(-1)
         try:
             self.__node_id_list = [ node_id for node_id in self.__node_id_list if node_id != node]
         except ValueError:
@@ -67,7 +62,6 @@ class Module:
         """ sort the node id list in this module
         """
         self.__node_id_list = sorted(self.__node_id_list, key=int)
-        #print("sorted", self.__node_id_list)
 
     def get_num_nodes(self):
         """return the number of nodes belonging to this module"""
@@ -81,7 +75,6 @@ class Module:
         """ set a global node id list"""
 
         for i, node in enumerate(self.__node_id_list):
-            #self.__global_node_id_list
             self.__global_node_id_list.append(id_glo_loc[node-1])
 
         self.__global_node_id_list.sort()
@@ -91,7 +84,6 @@ class Module:
         del self.__node_id_list[:]
         
         for id_loc, id_glo_in_list in enumerate(id_glo_loc):
-            #self.__global_node_id_list
             for j, id_glo_in_obj in enumerate(self.__global_node_id_list):
                 if id_glo_in_list == id_glo_in_obj:
                     self.__node_id_list.append(id_loc+1)
@@ -102,7 +94,6 @@ class Module:
        """ set a global node id list"""
 
        for i, node in enumerate(ids):
-           #self.__global_node_id_list
            self.__global_node_id_list.append(node)
 
     def set_links_and_pa(self, exit_link, enter_link, inter_link, pa):
@@ -191,11 +182,7 @@ class Module:
     def __repr__(self):
         """ called when this class object is printed
         """
-        #return "%s" % (self.__module_id)
-        #return "module id %s" % (self.__module_id)
-        #if len(self.__global_node_id_list) == 0:
         node_ids = self.__node_id_list
-        #else:
         node_ids_glob = self.__global_node_id_list
         
         return "module id %s, including node(local id) %s, node(global id) %s \n" % (self.__module_id, node_ids, node_ids_glob)

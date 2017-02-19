@@ -56,7 +56,7 @@ def construct_dict_from_tree(links, p_a, names, tree_obj, cluster_obj):
     # prepare edges
     edges = []
     nonzero_row, nonzero_col = links.nonzero()
-    #print (row,col)
+    
     for i in range(len(nonzero_row)):
         one_edge = {
                 "source": nonzero_col[i],
@@ -115,7 +115,7 @@ def construct_dict(links, names, list_nodes, list_modules):
     # prepare edges
     edges = []
     nonzero_row, nonzero_col = links.nonzero()
-    #print (row,col)
+
     for i in range(len(nonzero_row)):
         one_edge = {
                 "source": nonzero_col[i],

@@ -12,7 +12,6 @@ import math
 class Modularity(ql.Quality):
     
     def __init__(self):
-        #print("modularity class defined")
         pass
     def get_quality_value(self, pre_modules, w, p_a):
         ''' *** THIS FUNCTION IS OBLIGATE FOR ALL QUALITY EVALUATION MODULE***
