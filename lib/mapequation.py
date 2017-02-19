@@ -19,7 +19,7 @@ class Map(ql.Quality):
         if p > 0.0:
             val_return = p * math.log(p, 2.0)
         else:
-            val_return = 0.00000
+            val_return = 0.0
 
         return val_return
 
@@ -71,12 +71,8 @@ class Map(ql.Quality):
                 link_weights_to_out = self.sum_link_weight_to_out( w[:,node_id-1].todense().getA1(), mod_obj.get_node_list())
                 sum_pa_dot_w += pa[node_id-1]*link_weights_to_out
             
-            # there exists two equations for exit_flow. The rosvall2008 should be appropriate for here because in the equation 2010, 
-            # the term (n-n_i)/n, i.e. ratio of external nodes versus all nodes, includes the node where the walker is.
-            # but the same term in 2008 excludes it. this difference in 2010 causes a different value of exit flow even if it is with the same network
-            # depending on the state of node compression (or "pass" in Blondel 2008). 
-            exit_flow[i_mod] = cf.tau * (n - n_i)/(n - 1) * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall2008 eq.7
-            #exit_flow[i_mod] = cf.tau * (n - n_i)/n * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall2010 eq.6
+            #exit_flow[i_mod] = cf.tau * (n - n_i)/(n - 1) * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall2008 eq.7
+            exit_flow[i_mod] = cf.tau * (n - n_i)/n * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall2010 eq.6
             
         return exit_flow     
 
@@ -147,7 +143,6 @@ class Map(ql.Quality):
             for j, node_id in enumerate(nodes):
                 ratio2 = pa[node_id-1]/(exit_flow[i]+pa_sum)
                 term_3_2 -= self.plogp(ratio2) 
-
 
             rate_of_use_module_coodbook += exit_flow[i]
             
@@ -272,8 +267,7 @@ class Map(ql.Quality):
        
         # calculate 2nd term of eq.13 for a tree top or eq.14 for intermediate module in rosvall2011
         if ele.is_leaf() == False:
-            total_enter_flow = 0
-            qo = 0 # eq.9 rosvall2011
+            qo = 0 # eq.9 rosvall2011 or eq.7
 
             for i, child in enumerate(ele.id_child):
                 target = all_ele[child]
@@ -282,17 +276,16 @@ class Map(ql.Quality):
                 # add to the code length of this module
                 this_code_length += child_code_length
                 
-                total_enter_flow += all_ele[child].enter_link
                 qo += target.enter_link
 
-            qo += ele.exit_link                    
+            qo += ele.exit_link # for top element, exit_link value = 0                   
             # calculate rosvall2011 eq.13-14 right hand first term
             qHQ = 0
             if ele.id_this == 0: # tree top
                 for i, child in enumerate(ele.id_child):
                     child_obj = all_ele[child]
-                    qHQ -= self.plogp(child_obj.enter_link/total_enter_flow)
-                qHQ = total_enter_flow*qHQ
+                    qHQ -= self.plogp(child_obj.enter_link/qo)
+                qHQ = qo*qHQ
 
             else: # intermediate module
                 qHQ -= self.plogp(ele.exit_link/qo)
@@ -318,7 +311,6 @@ class Map(ql.Quality):
 
         return this_code_length
 
-
     def get_quality_value(self, __modules, w, p_a):
         ''' *** THIS FUNCTION IS OBLIGATE FOR ALL QUALITY EVALUATION MODULE***
 
@@ -340,9 +332,8 @@ class Map(ql.Quality):
             # calculate exit probability
             exit_flow = self.calc_exit_flow(mod_to_calc, w, p_a)
 
-            code_length = self.calc_two_level_map_witheq4(mod_to_calc, exit_flow, p_a)
+            code_length = self.calc_two_level_map(mod_to_calc, exit_flow, p_a)
             #code_length = self.calc_two_level_map_witheq4(mod_to_calc, exit_flow, p_a)
-
 
         return code_length
 

@@ -14,9 +14,9 @@ import numpy as np
 #infile_path = 'data/debug_no_dangling.csv'  
 #infile_path = 'data/sixtriangles_dir.csv'  
 #infile_path = 'data/n10.csv'  
-infile_path = 'data/n24.csv'  
+#infile_path = 'data/n24.csv'  
 #infile_path = 'data/new_n24.csv'  
-#infile_path = 'data/n48.csv'  
+infile_path = 'data/n48.csv'  
 #infile_path = 'data/fs_flow.csv'
 #infile_path = 'data/fs_sink.csv'
 #infile_path = 'data/n50_hie.csv'
@@ -24,9 +24,9 @@ infile_path = 'data/n24.csv'
 # node id-name list filename
 #vertices_file_path = 'data/debug_no_dangling_vertices.csv'
 #vertices_file_path = 'data/n10_vertices.csv'
-vertices_file_path = 'data/n24_vertices.csv'
+#vertices_file_path = 'data/n24_vertices.csv'
 #vertices_file_path = 'data/new_n24_vertices.csv'
-#vertices_file_path = 'data/n48_vertices.csv'
+vertices_file_path = 'data/n48_vertices.csv'
 #vertices_file_path = 'data/fs_flow_vertices.csv'
 #vertices_file_path = 'data/fs_sink_vertices.csv'
 #vertices_file_path = 'data/n50_hie_vertices.csv'
@@ -37,8 +37,8 @@ vertices_file_path = 'data/n24_vertices.csv'
 #total_nodes = 4
 #total_nodes = 18
 #total_nodes = 10
-total_nodes = 24
-#total_nodes = 48
+#total_nodes = 24
+total_nodes = 48
 #total_nodes = 16
 #total_nodes = 50
 
@@ -55,16 +55,16 @@ p_conv_threshold = 1.0e-14
 p_algo_type = 1
 
 # type of equation for transient matrix; 1 : standard teleportation, 2 : smart recorded teleportation, 3 : smart unrecorded teleportation. (ref. lambiotte_2012)
-teleport_type = 1
+teleport_type = 3
 
 # tau: teleportation probability, tau = 1 - d, where d is damping factor
 tau = 0.15
 
 # method for clustering; 1: map equation, 2: modulity
-quality_method = 1
+quality_method = 2
 
 # community division type; 1: two-level, 2: hierarchial
-division_type = 2
+division_type = 1
 
 # threshold for loop of search algorithm
 threshold_search = 0.000000000000000000000000000000

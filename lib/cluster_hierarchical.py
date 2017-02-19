@@ -71,6 +71,7 @@ class Cluster_Hierarchical:
         self.__Tree.tree_draw_with_ete3(0)
         # calculate initial ql value
         self.ql_global_best = QL.get_hierarchical_quality_value(self.__Tree.get_tree_list(), self.glob_w, self.glob_pa)
+        self.final_store = copy.deepcopy(self.__Tree.get_tree_list())
         print("initial global quality value: ", self.ql_global_best)
 
         # start of recursive extention of branches 
@@ -78,7 +79,7 @@ class Cluster_Hierarchical:
 
         print("final state of tree")
         #self.__Tree.print_tree()
-        self.__Tree.tree_draw_with_ete3(initial_parent_id)
+        self.__Tree.tree_draw_with_ete3(initial_parent_id, self.ql_global_best)
 
     def one_level_finer(self, w, p_a, grand_parent_id, ql_init):
         """ this function tries to expand each branch of the tree
@@ -184,7 +185,7 @@ class Cluster_Hierarchical:
 
             # erase "#" for indicate tree states at each step
             #print( self.__Tree.print_tree())
-            self.__Tree.tree_draw_with_ete3(0, ql_global_temp)
+            #self.__Tree.tree_draw_with_ete3(0, ql_global_temp)
  
         ### end while loop
 
@@ -201,10 +202,6 @@ class Cluster_Hierarchical:
         else:
             #print("recursive tree branch extention finished")
             self.__Tree.set_tree_list(self.final_store)
-            #node_list, module_list = self.__Tree.subtree2modulelist(grand_parent_id)
-            #self.__modules = module_list
-            print("global optimized tree")
-            self.__Tree.tree_draw_with_ete3(0, ql_best)
 
             erased_id = None
             #print("ql initial ---> best", ql_init, " ---> ",ql_best)

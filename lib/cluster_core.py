@@ -341,9 +341,13 @@ class Cluster_Core:
         w_enters = w_merged.sum(axis=1).getA1()
         w_exits  = w_merged.sum(axis=0).getA1()
         
+        n_total = len(pa_node_base) # total number of nodes
+
         if cf.division_type == 1: # map equation
             # calculate pa*wa-b and record as *_link
             for i, mod_obj in enumerate(modules):
+                n_i = mod_obj.get_num_nodes()
+
                 #internal_flow = pa_merged[i] * w_merged[i,i]
                 internal_flow = pa_merged[i] * w_merged[i,i] * (1 - cf.tau)
                 enter_flow    = 0
@@ -351,10 +355,11 @@ class Cluster_Core:
 
                 for j, mod_obj2 in enumerate(modules):
                     if i != j:
+                        n_i2 = mod_obj2.get_num_nodes()
                         #enter_flow += pa_merged[j] * w_merged[i,j]
                         #exit_flow  += pa_merged[i] * w_merged[j,i]
-                        enter_flow += pa_merged[j] * w_merged[i,j] * (1 - cf.tau)
-                        exit_flow  += pa_merged[i] * w_merged[j,i] * (1 - cf.tau)
+                        enter_flow += pa_merged[j] * w_merged[i,j] * (1 - cf.tau) + cf.tau * n_i/(n_total-1)*pa_merged[j]
+                        exit_flow  += pa_merged[i] * w_merged[j,i] * (1 - cf.tau) + cf.tau * n_i2/(n_total-1)*pa_merged[i]
 
                 mod_obj.set_links_and_pa(exit_flow, enter_flow, internal_flow, pa_merged[i])
             

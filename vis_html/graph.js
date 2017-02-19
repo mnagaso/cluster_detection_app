@@ -76,10 +76,11 @@ Graph.prototype = {
         moduleId = parsed.nodes[i].attributes.Module_id;
         parsed.nodes[i].group = moduleId;
         parsed.nodes[i].size = 32;
+        totalNumModule = parsed.nodes[i].attributes.Total_mod;
         if(maxModuleId < moduleId){
           self.options.groups[moduleId] = {
             shape: 'dot',
-            color: self.getRandomColor(moduleId)
+            color: self.getRandomColor(moduleId, totalNumModule)
           }
           maxModuleId = moduleId;
         }
@@ -101,9 +102,10 @@ Graph.prototype = {
       network = new vis.Network(container, data, self.options);
     });
   },
-  getRandomColor: function(moduleId){
-    Math.seedrandom(moduleId);
-    var hue = Math.random();
+  getRandomColor: function(moduleId, totalNumModule){
+    var hueIni = 0.1;
+    var hueWid = 0.95;
+    var hue = hueIni + (moduleId-1) * hueWid / (totalNumModule-1);
     var saturation = 1.0;
     var lightness = 0.5;
     return Color.hsl(hue, saturation, lightness).hexTriplet();

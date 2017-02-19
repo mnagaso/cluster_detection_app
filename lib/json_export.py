@@ -100,6 +100,8 @@ def construct_dict_from_tree(links, p_a, names, tree_obj, cluster_obj):
         for i in range(len(module_ids)):
             tag = "layer " + str(i+1)
             attributes[tag] = module_ids[i]
+
+        attributes["Total_mod"] = len(cluster_obj.get_modules()) 
         # then register
         one_node["attributes"] = attributes
 
@@ -111,6 +113,7 @@ def construct_dict_from_tree(links, p_a, names, tree_obj, cluster_obj):
 
 def construct_dict(links, names, list_nodes, list_modules):
     pre_json = {}
+    num_modules = len(list_modules)
 
     # prepare edges
     edges = []
@@ -140,7 +143,8 @@ def construct_dict(links, names, list_nodes, list_modules):
                 "y": 1,
                 "id": n,
                 "attributes": {
-                                    "Module_id": list_nodes[n].get_module_id()
+                                    "Module_id": list_nodes[n].get_module_id(),
+                                    "Total_mod": num_modules
                                 },
                 "color": "rgb(0,0,255)",
                 "size": 1
