@@ -106,58 +106,59 @@ class Cluster_Core:
                     # get a list of neighboring module id
                     neighbor_list = self.__modules[mp_i].get_neighbor_list(w_merged, self.__modules, id_node_moved)
 
-                    # remove nodes from its module
-                    self.__modules[mp_i].remove_node(id_node_moved)
+                    if len(neighbor_list) != 0:
+                        # remove nodes from its module
+                        self.__modules[mp_i].remove_node(id_node_moved)
 
-                    ql_min = ql_now # dump ql value
+                        ql_min = ql_now # dump ql value
 
-                    # dump module id for destination
-                    dump_mod_id = -1
+                        # dump module id for destination
+                        dump_mod_id = -1
 
-###-###-###-###-# third loop: for moving a node to neighboring modules
-                    for index, mod_id_neigh in enumerate(neighbor_list):
-                    
-                        # dump the neighbor module object
-                        #print ("attempt: ", attempt_count, "n-th node: ", i," move trial: ", index,"mod_id_neigh: ", mod_id_neigh)
-                        if mod_id_neigh != self.__modules[mod_id_neigh-1].get_module_id():
-                            print("neibor module id and list id not matched")
-                            sys.exit(1)
-                        dump_module = copy.deepcopy(self.__modules[mod_id_neigh - 1])
-                        # add nodes to one of neighboring module
-                        self.__modules[mod_id_neigh - 1].add_node_temp(id_node_moved)
+###-###-###-###-###-###-# third loop: for moving a node to neighboring modules
+                        for index, mod_id_neigh in enumerate(neighbor_list):
+                        
+                            # dump the neighbor module object
+                            #print ("attempt: ", attempt_count, "n-th node: ", i," move trial: ", index,"mod_id_neigh: ", mod_id_neigh)
+                            if mod_id_neigh != self.__modules[mod_id_neigh-1].get_module_id():
+                                print("neibor module id and list id not matched")
+                                sys.exit(1)
+                            dump_module = copy.deepcopy(self.__modules[mod_id_neigh - 1])
+                            # add nodes to one of neighboring module
+                            self.__modules[mod_id_neigh - 1].add_node_temp(id_node_moved)
 
-                        # calculate code length
-                        # check if all nodes are in the same module -> in this case map equation is not defined.
-                        ql_trial = QL.get_quality_value(self.__modules, w_merged, pa_merged)
-                        #print ("ql change, minimum_ql ---> this trial node move: ", ql_min, " ---> ",ql_trial)
+                            # calculate code length
+                            # check if all nodes are in the same module -> in this case map equation is not defined.
+                            ql_trial = QL.get_quality_value(self.__modules, w_merged, pa_merged)
+                            #print ("ql change, minimum_ql ---> this trial node move: ", ql_min, " ---> ",ql_trial)
 
-                        if QL.check_network_got_better(ql_min, ql_trial) == True: # if the clusting become better
-                            ql_min = ql_trial
-                            dump_mod_id = mod_id_neigh
-                            success_dump = copy.deepcopy(self.__modules[mod_id_neigh - 1])
-                            # return the temporal node movement
-                            self.__modules[mod_id_neigh - 1] = copy.deepcopy(dump_module)
+                            if QL.check_network_got_better(ql_min, ql_trial) == True: # if the clusting become better
+                                ql_min = ql_trial
+                                dump_mod_id = mod_id_neigh
+                                success_dump = copy.deepcopy(self.__modules[mod_id_neigh - 1])
+                                # return the temporal node movement
+                                self.__modules[mod_id_neigh - 1] = copy.deepcopy(dump_module)
+                            else:
+                                # return the temporal node movement
+                                self.__modules[mod_id_neigh - 1] = copy.deepcopy(dump_module)
+
+                        # when any ql improvement happened  
+                        if QL.check_network_got_better(ql_now, ql_min) == True: 
+                            # decide one of a neighbor module as a destination of the movement
+                            # add nodes to one of neighboring module
+                            self.__modules[dump_mod_id - 1] = copy.deepcopy(success_dump)
+
+                            # update ql value
+                            ql_now = ql_min
+
+                        # if no improvement found
                         else:
-                            # return the temporal node movement
-                            self.__modules[mod_id_neigh - 1] = copy.deepcopy(dump_module)
+                            #print ("\n###destination not found\n\n")
+                            # return nodes to its former module
+                            self.__modules[mp_i].add_node_temp(id_node_moved)
 
-                    # when any ql improvement happened  
-                    if QL.check_network_got_better(ql_now, ql_min) == True: 
-                        # decide one of a neighbor module as a destination of the movement
-                        # add nodes to one of neighboring module
-                        self.__modules[dump_mod_id - 1] = copy.deepcopy(success_dump)
-
-                        # update ql value
-                        ql_now = ql_min
-
-                    # if no improvement found
-                    else:
-                        #print ("\n###destination not found\n\n")
-                        # return nodes to its former module
-                        self.__modules[mp_i].add_node_temp(id_node_moved)
-
-                    # print for indicate node movement of each step
-                    #print(self.__modules)
+                        # print for indicate node movement of each step
+                        #print(self.__modules)
    
                 #print("### attempt count:", attempt_count, ", 1st step end")
 
@@ -297,7 +298,7 @@ class Cluster_Core:
         # pa list
         pa_temp = [] # list append is faster than np.append
         # re-construct module-based w matrix
-        w_merged = spa.lil_matrix((num_module, num_module))
+        w_merged = spa.lil_matrix((num_module, num_module), dtype=cf.myfloat)
 
         for i, mod in enumerate(modules):
             node_list = []
@@ -321,7 +322,7 @@ class Cluster_Core:
 
 
         # convert to a numpy array
-        pa_merged = np.array(pa_temp)
+        pa_merged = np.array(pa_temp, dtype=cf.myfloat)
    
         return pa_merged, w_merged
 
@@ -339,7 +340,6 @@ class Cluster_Core:
         pa_merged, w_merged = self.get_merged_pa_w_array(w_node_base, pa_node_base, modules)
         w_enters = w_merged.sum(axis=1).getA1()
         w_exits  = w_merged.sum(axis=0).getA1()
-
         
         if cf.division_type == 1: # map equation
             # calculate pa*wa-b and record as *_link
@@ -356,7 +356,6 @@ class Cluster_Core:
                         enter_flow += pa_merged[j] * w_merged[i,j] * (1 - cf.tau)
                         exit_flow  += pa_merged[i] * w_merged[j,i] * (1 - cf.tau)
 
-
                 mod_obj.set_links_and_pa(exit_flow, enter_flow, internal_flow, pa_merged[i])
             
         elif cf.division_type != 1: # modularity or others
@@ -365,7 +364,6 @@ class Cluster_Core:
                 enter_link    = w_enters[i] - internal_link 
                 exit_link     = w_exits[i]  - internal_link
                 mod_obj.set_links_and_pa(exit_link, enter_link, internal_link, pa_merged[i])
-
 
     def get_module_ids_without_node(self, modules):
         """ get module id list which has no member node

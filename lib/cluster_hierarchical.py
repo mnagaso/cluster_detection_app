@@ -52,7 +52,6 @@ class Cluster_Hierarchical:
         
         # get the final quality value
         ql_first_division = Two_level.get_ql_final()
-        print("ql initi val", ql_first_division)
         # advance division till no further splits are possible.
         # then submodule and single node movement are done with Depth-First Searching order.
         self.build_network_tree(w, p_a, self.__modules, ql_first_division)   
@@ -71,8 +70,8 @@ class Cluster_Hierarchical:
         print("initial state of tree")
         self.__Tree.tree_draw_with_ete3(0)
         # calculate initial ql value
-        #self.ql_global_best = QL.get_hierarchical_quality_value(self.__Tree.get_tree_list(), self.glob_w, self.glob_pa)
-        print("initial quality value: ", ql_init)
+        self.ql_global_best = QL.get_hierarchical_quality_value(self.__Tree.get_tree_list(), self.glob_w, self.glob_pa)
+        print("initial global quality value: ", self.ql_global_best)
 
         # start of recursive extention of branches 
         self.one_level_finer(w, p_a, initial_parent_id, ql_init)
@@ -172,11 +171,11 @@ class Cluster_Hierarchical:
 
             loop_count += 1
 
-            if grand_parent_id == 1: ######## for test
-                ql_global_temp = QL.get_hierarchical_quality_value(self.__Tree.get_tree_list(), self.glob_w, self.glob_pa)
-                if QL.check_network_got_better(self.ql_global_best, ql_global_temp) == True:
-                    self.ql_global_best = ql_global_temp
-                    self.final_store = copy.deepcopy(self.__Tree.get_tree_list())
+            #if grand_parent_id == 1: ######## for test
+            ql_global_temp = QL.get_hierarchical_quality_value(self.__Tree.get_tree_list(), self.glob_w, self.glob_pa)
+            if QL.check_network_got_better(self.ql_global_best, ql_global_temp) == True:
+                self.ql_global_best = ql_global_temp
+                self.final_store = copy.deepcopy(self.__Tree.get_tree_list())
 
             if grand_parent_id == 0:
                 #print("ql_best", ql_best)
@@ -185,7 +184,7 @@ class Cluster_Hierarchical:
 
             # erase "#" for indicate tree states at each step
             #print( self.__Tree.print_tree())
-            #self.__Tree.tree_draw_with_ete3(0, ql_best)
+            self.__Tree.tree_draw_with_ete3(0, ql_global_temp)
  
         ### end while loop
 

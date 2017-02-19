@@ -102,7 +102,7 @@ class Cluster_Two_Level:
         while loop_count < cf.num_trial:
             # for fast conversion
             if grand_parent_id != 0:
-                loop_count = cf.num_trial
+                loop_count = cf.num_trial - 1
 
             queue_ids = copy.deepcopy(self.__Tree.get_element_object(grand_parent_id).id_child)
 
@@ -223,7 +223,7 @@ class Cluster_Two_Level:
             id_glo_loc = np.zeros((num_nodes),np.int)
 
             # define partial w/pa matrix
-            w_part  = spa.lil_matrix((num_nodes,num_nodes))
+            w_part  = spa.lil_matrix((num_nodes,num_nodes), dtype=cf.myfloat)
             pa_part = np.zeros(num_nodes)
 
             # get values from original w/pa matrix

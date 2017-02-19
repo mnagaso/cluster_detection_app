@@ -64,7 +64,7 @@ tau = 0.15
 quality_method = 1
 
 # community division type; 1: two-level, 2: hierarchial
-division_type = 1
+division_type = 2
 
 # threshold for loop of search algorithm
 threshold_search = 0.000000000000000000000000000000

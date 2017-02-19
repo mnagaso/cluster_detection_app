@@ -71,9 +71,13 @@ class Map(ql.Quality):
                 link_weights_to_out = self.sum_link_weight_to_out( w[:,node_id-1].todense().getA1(), mod_obj.get_node_list())
                 sum_pa_dot_w += pa[node_id-1]*link_weights_to_out
             
-            #exit_flow[i_mod] = cf.tau * (n - n_i)/(n - 1) * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall2008 eq.7
-            exit_flow[i_mod] = cf.tau * (n - n_i)/n * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall2010 eq.6
-
+            # there exists two equations for exit_flow. The rosvall2008 should be appropriate for here because in the equation 2010, 
+            # the term (n-n_i)/n, i.e. ratio of external nodes versus all nodes, includes the node where the walker is.
+            # but the same term in 2008 excludes it. this difference in 2010 causes a different value of exit flow even if it is with the same network
+            # depending on the state of node compression (or "pass" in Blondel 2008). 
+            exit_flow[i_mod] = cf.tau * (n - n_i)/(n - 1) * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall2008 eq.7
+            #exit_flow[i_mod] = cf.tau * (n - n_i)/n * sum_pa + (1 - cf.tau) * sum_pa_dot_w # rosvall2010 eq.6
+            
         return exit_flow     
 
     def calc_enter_flow(self, modules, w, pa):
@@ -333,10 +337,12 @@ class Map(ql.Quality):
         if len(mod_to_calc) == 1 or count_mod_with_nod <= 1:
             code_length = 9999999. # map equation is not defined for one module state
         else:
-           # calculate exit probability
-           exit_flow = self.calc_exit_flow(mod_to_calc, w, p_a)
+            # calculate exit probability
+            exit_flow = self.calc_exit_flow(mod_to_calc, w, p_a)
 
-           code_length = self.calc_two_level_map_witheq4(mod_to_calc, exit_flow, p_a)
+            code_length = self.calc_two_level_map_witheq4(mod_to_calc, exit_flow, p_a)
+            #code_length = self.calc_two_level_map_witheq4(mod_to_calc, exit_flow, p_a)
+
 
         return code_length
 
