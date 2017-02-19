@@ -89,12 +89,17 @@ if __name__ == '__main__':
     # re-read w matrix for edge indication
     #gv.W = csim.get_w_from_csv(cf.infile_path, cf.infile_directed_type, cf.total_nodes)
 
-    import json_export as jex
-    jex.json_out(gv.W, cluster)
+    if cf.division_type == 1:
+        import json_export as jex
+        jex.json_out(gv.W, gv.P_alpha, cluster)
 
-    import csv_export as csx
-    csx.export_csv(gv.P_alpha, cluster)
-    
+        import csv_export as csx
+        csx.export_csv(gv.P_alpha, cluster)
+    elif cf.division_type == 2:
+        import json_export as jex
+        jex.json_out(gv.W, gv.P_alpha, cluster)
+        # csv export is done at the same time with json export
+       
  
     # visualize
 

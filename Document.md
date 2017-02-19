@@ -4,7 +4,7 @@
 
 ## 概要
 
-python による network clustering 計算用モジュールです。
+python による network clustering 計算用モジュールです。  
 Map equation (Rosvall 2008, 2010, 2011) もしくはModularity (Clauset 2004)によるクラスタリングを行います。
 Search algorithm にはLouvain method (Blondel 2008) とModified Louvain method (Rosvall 2010) を採用しています。
 Map equation により2階層・多階層へ、Modularity では2階層へのモジュール分割が可能です。
@@ -177,7 +177,7 @@ float get_quality_value(self, __modules, w, p_a)
 #### ver 0.9 
 
 - MapEquation と Modurarity によるクラスタ構造解析処理実装
-- クラスタリング結果可視化処理実装
+- クラスタリング結果可視化処理（仮）実装
 
 
 ## references (code内に書かれたrefも以下を参照)

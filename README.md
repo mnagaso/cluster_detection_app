@@ -1,15 +1,3 @@
-# Project ENOT #
-
-Project ENOT:cat: is a code
-dedicated for clustering using "random walker" or "Map Equation".
-
-## code description here ##
-* python base
-* csv in/output support
-
-:banana:
-
--------
 #Requirements:
 scipy  
 numpy   
