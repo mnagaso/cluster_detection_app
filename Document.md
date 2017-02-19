@@ -1,4 +1,4 @@
-# クラスタ構造解析アプリケーション(ver0.9)
+# クラスタ構造解析アプリケーション(ver1.0)
 
 ---
 
@@ -14,17 +14,34 @@ Map equation により2階層・多階層へ、Modularity では2階層へのモ
 ## ファイル構成
 
 - README.md : セットアップ説明ドキュメント
-- config.py : 設定ファイル
+- config.py.sample : 設定ファイルサンプル
 - clustering.py : 実行メインスクリプト
-- data/ : 入力データ用ディレクトリ
+- data/ : データ用ディレクトリ
 - output_files/ : クラスタリング結果保存用ディレクトリ
 - lib/ : 各種計算用pythonモジュール
 - compile.sh : 幾つかのモジュールをcython化して計算速度を向上させます(未最適化)
 - decompile.sh : cython化されたモジュールをもとのネイティブpythonに戻します
 
+## セットアップ
+
+- python version 3.5.2 推奨です (pyenv等を用いて環境を用意すると便利です）
+
+### パッケージのインストール
+
+以下のパッケージを pip を用いてインストールして下さい。
+
+```
+pip install scipy
+pip install numpy
+pip install cython
+pip install ete3
+```
+
 ## クラスタリング実行方法
 
-config.py で設定した後に以下のコマンドで実行して下さい。
+config.py.sample から設定ファイル config.py を作成して下さい。
+
+config.py で設定を施した後に以下のコマンドで実行して下さい。
 
 
 ```
@@ -61,6 +78,7 @@ python clustering.py
 	- 1 : two-level
 	- 2 : 階層化
 - num_trial : 各階層モジュール毎の分割リトライ回数（論文的には100回ですがnode数に合わせて調整した方が現実的と思われます）
+- simple_flow :
 
 #### python における設定値（特に調整する必要は無いです）
 - threshold_search : サーチアルゴリズムの収束判定に用いられる閾値
@@ -97,16 +115,17 @@ python clustering.py
 
 #### サンプルデータについて
 dataフォルダ内には予め2種のサンプルデータが用意されています。
-- n24.csv, n24_vertices.csv
-    - 総ノード数24のdirected, weightedネットワークです。 
-- n48.csv  n48_vertices.csv
-    - 総ノード数48のdirected, weightedネットワークです。
+
+- n24.csv, n24_vertices.csv  
+総ノード数24のdirected, weightedネットワークです。 
+- n48.csv  n48_vertices.csv  
+総ノード数48のdirected, weightedネットワークです。
 
 それぞれのデータは Lancichinetti 2009 のベンチマーク用ネットワーク生成プログラムを用いて生成されたものです。`util/test_network_generation/`内にそのプログラムを入れてあります。実行にはまず同フォルダ内にて、
 `make`
 して、その後に生成される`benchmark`を実行します。n24フォルダ内に総ノード数24のネットワークを作成するための設定ファイル(`flag_new_n24.dat`)と、ネットワークデータの作成-データ・フォーマットの変換を行うシェルスクリプト(`auto.sh`)を入れました。`auto.sh`を実行すると、dataフォルダ内にnew_n24.csvとnew_n24_vertices.csvが生成されます。
 このプログラムは
-https://sites.google.com/site/santofortunato/inthepress2 
+[https://sites.google.com/site/santofortunato/inthepress2]()
 からもダウンロードできます。
 
 ### 実行結果
@@ -205,7 +224,7 @@ float get_quality_value(self, __modules, w, p_a)
 
 ## 変更点
 
-#### ver 0.9 
+#### ver 1.0
 
 - MapEquation と Modurarity によるクラスタ構造解析処理実装
 - クラスタリング結果可視化処理（仮）実装
