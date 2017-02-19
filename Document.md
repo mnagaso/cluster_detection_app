@@ -68,15 +68,46 @@ python clustering.py
 - seed_var : サーチアルゴリズム内で移動試行されるノードの順番を生成するための乱数シード値。0以外に設定すると再現性の有るクラスタリングを、0に設定すると毎回ランダムなクラスタリングを行います。
 
 ### 入力データフォーマット
+計算には下記の2つのデータファイルがdataフォルダ内に必要です。
+- 1 ノードのグローバルidと対応する名前を格納したファイル
+- 2 ノード間のリンクウェイトを記録したファイル
 
+#### 1. ノードのグローバルidと対応する名前を格納したファイル
+ノードのネットワーク全体でのグローバルなidと名前を格納したcsvファイルです。
+[id,名前]の順に置きます。
+
+参考
+```
+1,id_1
+2,id_2
+3,id_3
+...
+```
+
+#### 2. ノード間のリンクウェイトを記録したファイル
 データフォーマットは遷移の重さで表し、 [source node id, target node id, weight] で表現されています。(Link list format)
 
+参考
 ```
 1,4,1.01234
 2,1,0.12413
 2,8,0.61241
 ...
 ```
+
+#### サンプルデータについて
+dataフォルダ内には予め2種のサンプルデータが用意されています。
+- n24.csv, n24_vertices.csv
+    - 総ノード数24のdirected, weightedネットワークです。 
+- n48.csv  n48_vertices.csv
+    - 総ノード数48のdirected, weightedネットワークです。
+
+それぞれのデータは Lancichinetti 2009 のベンチマーク用ネットワーク生成プログラムを用いて生成されたものです。`util/test_network_generation/`内にそのプログラムを入れてあります。実行にはまず同フォルダ内にて、
+`make`
+して、その後に生成される`benchmark`を実行します。n24フォルダ内に総ノード数24のネットワークを作成するための設定ファイル(`flag_new_n24.dat`)と、ネットワークデータの作成-データ・フォーマットの変換を行うシェルスクリプト(`auto.sh`)を入れました。`auto.sh`を実行すると、dataフォルダ内にnew_n24.csvとnew_n24_vertices.csvが生成されます。
+このプログラムは
+https://sites.google.com/site/santofortunato/inthepress2 
+からもダウンロードできます。
 
 ### 実行結果
 
@@ -184,6 +215,7 @@ float get_quality_value(self, __modules, w, p_a)
 - Blondel 2008: Blondel, Vincent D., et al. "Fast unfolding of communities in large networks." Journal of statistical mechanics: theory and experiment 2008.10 (2008): P10008.
 - Clauset 2004:Clauset, Aaron, Mark EJ Newman, and Cristopher Moore. "Finding community structure in very large networks." Physical review E 70.6 (2004): 066111.
 - Lambiotte 2012: Lambiotte, Renaud, and Martin Rosvall. "Ranking and clustering of nodes in networks with smart teleportation." Physical Review E 85.5 (2012): 056107.
+- Lancichinetti 2009: Lancichinetti, Andrea, and Santo Fortunato. "Community detection algorithms: a comparative analysis." Physical review E 80.5 (2009): 056117.
 - Langville 2011: Langville, Amy N., and Carl D. Meyer. Google's PageRank and beyond: The science of search engine rankings. Princeton University Press, 2011.
 - Rosvall 2008: Rosvall, Martin, and Carl T. Bergstrom. "Maps of random walks on complex networks reveal community structure." Proceedings of the National Academy of Sciences 105.4 (2008): 1118-1123.
 - Rosvall 2010: Rosvall, Martin, Daniel Axelsson, and Carl T. Bergstrom. "The map equation." The European Physical Journal Special Topics 178.1 (2009): 13-23.
