@@ -78,7 +78,6 @@ python clustering.py
 	- 1 : two-level
 	- 2 : 階層化
 - num_trial : 各階層モジュール毎の分割リトライ回数（論文的には100回ですがnode数に合わせて調整した方が現実的と思われます）
-- simple_flow :
 
 #### python における設定値（特に調整する必要は無いです）
 - threshold_search : サーチアルゴリズムの収束判定に用いられる閾値
