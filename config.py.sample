@@ -19,7 +19,7 @@ vertices_file_path = 'data/n24_vertices.csv'
 # total number of nodes in input data
 total_nodes = 24
 
-outfile = 'output_files/test_out.csv'
+outfile_path = 'output_files/test_out.csv'
 
 # algorithm for calculation of p_alpha; 1 : power method, 2 : arnoldi method
 p_algo_type = 1
