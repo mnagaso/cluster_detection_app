@@ -105,12 +105,16 @@ class Calc_p_alpha:
     
     def get_iterate_matrix(self, t, n, w, d):
         """prepare a matrix to be iterated."""
-        func = np.zeros((n, n),dtype=cf.myfloat)
+        #func = np.zeros((n, n),dtype=cf.myfloat)
+        func = spa.lil_matrix((n, n),dtype=cf.myfloat)
 
         if cf.teleport_type == 1:
             # standard teleoprtation
-            func = (1. - cf.tau) * t + (cf.tau * 1. / n) * np.ones((n,n)) \
-                + ((1. - cf.tau)) / n * np.tile(d,(n,1))
+            #func = (1. - cf.tau) * t + (cf.tau * 1. / n) * np.ones((n,n)) \
+            #    + ((1. - cf.tau)) / n * np.tile(d,(n,1))
+            func = (1. - cf.tau) * t + (cf.tau * 1. / n) * np.eye(n) \
+                 + (1. - cf.tau) / n * np.tile(d,(n,1))
+
         elif cf.teleport_type == 2 or cf.teleport_type == 3:
             # smart recorded teleportation
     

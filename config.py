@@ -16,20 +16,23 @@ import numpy as np
 #infile_path = 'data/n10.csv'  
 #infile_path = 'data/n24.csv'  
 #infile_path = 'data/new_n24.csv'  
-infile_path = 'data/n48.csv'  
+#infile_path = 'data/n48.csv'  
 #infile_path = 'data/fs_flow.csv'
 #infile_path = 'data/fs_sink.csv'
 #infile_path = 'data/n50_hie.csv'
+infile_path = 'data/80k.csv'
 
 # node id-name list filename
 #vertices_file_path = 'data/debug_no_dangling_vertices.csv'
 #vertices_file_path = 'data/n10_vertices.csv'
 #vertices_file_path = 'data/n24_vertices.csv'
 #vertices_file_path = 'data/new_n24_vertices.csv'
-vertices_file_path = 'data/n48_vertices.csv'
+#vertices_file_path = 'data/n48_vertices.csv'
 #vertices_file_path = 'data/fs_flow_vertices.csv'
 #vertices_file_path = 'data/fs_sink_vertices.csv'
 #vertices_file_path = 'data/n50_hie_vertices.csv'
+vertices_file_path = 'data/80k_vertices.casv'
+
 
 
 # total number of nodes in input data
@@ -38,9 +41,10 @@ vertices_file_path = 'data/n48_vertices.csv'
 #total_nodes = 18
 #total_nodes = 10
 #total_nodes = 24
-total_nodes = 48
+#total_nodes = 48
 #total_nodes = 16
 #total_nodes = 50
+total_nodes = 80000
 
 infile_directed_type = 1 # 1 : directed, 2 : undirected
 
@@ -55,7 +59,7 @@ p_conv_threshold = 1.0e-14
 p_algo_type = 1
 
 # type of equation for transient matrix; 1 : standard teleportation, 2 : smart recorded teleportation, 3 : smart unrecorded teleportation. (ref. lambiotte_2012)
-teleport_type = 3
+teleport_type = 1
 
 # tau: teleportation probability, tau = 1 - d, where d is damping factor
 tau = 0.15

@@ -17,6 +17,7 @@ def get_w_from_csv(infile_path, directed_type, number_of_all_nodes):
 
     #test print
     print ('here in csv_import')
+    print ('total number of nodes: ', number_of_all_nodes)
 
     #read input file
     csv_reader = csv.reader(open(infile_path))
@@ -25,7 +26,7 @@ def get_w_from_csv(infile_path, directed_type, number_of_all_nodes):
         w = lil_matrix((number_of_all_nodes, number_of_all_nodes),dtype=cf.myfloat)
         for line in csv_reader:
             # input format
-            node_id_from, node_id_to, weight = map(np.float16, line)
+            node_id_from, node_id_to, weight = map(np.float32, line)
             w[node_id_to-1,node_id_from-1] = weight
 
             ## this line is for mimicing undirected input to directed network
@@ -38,5 +39,6 @@ def get_w_from_csv(infile_path, directed_type, number_of_all_nodes):
     except:
         print ("input file read error")
         print ("total_nodes in config.py is not equal to the actual number of nodes in input csv file.")
+
         sys.exit(1)
 
