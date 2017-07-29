@@ -24,8 +24,9 @@ import numpy as np
 #infile_path = 'data/new_n800.csv'
 #infile_path = 'data/new_n8000.csv'
 #infile_path = 'data/new_n4000.csv'
-infile_path = 'data/new_n2000.csv'
-
+#infile_path = 'data/new_n2000.csv'
+infile_path = 'data/new_n20k.csv'
+#infile_path = 'data/new_n40k.csv'
 
 
 
@@ -38,15 +39,13 @@ infile_path = 'data/new_n2000.csv'
 #vertices_file_path = 'data/fs_flow_vertices.csv'
 #vertices_file_path = 'data/fs_sink_vertices.csv'
 #vertices_file_path = 'data/n50_hie_vertices.csv'
-#vertices_file_path = 'data/80k_vertices.casv'
-#vertices_file_path = 'data/new_n800_vertices.casv'
-#vertices_file_path = 'data/new_n8000_vertices.casv'
-#vertices_file_path = 'data/new_n4000_vertices.casv'
-vertices_file_path = 'data/new_n2000_vertices.casv'
-
-
-
-
+#vertices_file_path = 'data/80k_vertices.csv'
+#vertices_file_path = 'data/new_n800_vertices.csv'
+#vertices_file_path = 'data/new_n8000_vertices.csv'
+#vertices_file_path = 'data/new_n4000_vertices.csv'
+#vertices_file_path = 'data/new_n2000_vertices.csv'
+vertices_file_path = 'data/new_n20k_vertices.csv'
+#vertices_file_path = 'data/new_n40k_vertices.csv'
 
 # total number of nodes in input data
 #total_nodes = 128 
@@ -61,10 +60,9 @@ vertices_file_path = 'data/new_n2000_vertices.casv'
 #total_nodes = 800
 #total_nodes = 8000
 #total_nodes = 4000
-total_nodes = 2000
-
-
-
+#total_nodes = 2000
+total_nodes = 20000
+#total_nodes = 40000
 
 infile_directed_type = 1 # 1 : directed, 2 : undirected
 
