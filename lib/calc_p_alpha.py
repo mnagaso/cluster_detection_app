@@ -42,7 +42,7 @@ class Calc_p_alpha:
             dump_A_dot_p = np.zeros(n,dtype=cf.myfloat)           
             dump_norm_A_dot_p = 0.
             # A*p_t
-            dump_A_dot_p = np.dot(A,p)
+            dump_A_dot_p = A.dot(p)
             # |A*p_t|
             dump_norm_A_dot_p = LA.norm(dump_A_dot_p, ord=2)
             # calculate p_t+1
@@ -60,8 +60,8 @@ class Calc_p_alpha:
     
         # normalize 
         lenP = LA.norm(p, ord=1)
-        #print ("check p_sum normalized: ", p_sum)
-        return (p/lenP).getA1()
+        print ("check p_sum normalized: ", np.sum(p/lenP))
+        return p/lenP #.getA1()
     
     def arnoldi_method(self, A, n):
         ''' here we calculate  

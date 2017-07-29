@@ -5,6 +5,7 @@
 global variables' definitions here
 
 '''
+import resource
 
 import config as cf
 
@@ -16,3 +17,5 @@ W = lil_matrix((cf.total_nodes, cf.total_nodes), dtype=cf.myfloat)
 
 # probability to visit node alpha
 P_alpha = np.zeros((1,cf.total_nodes), dtype=cf.myfloat)
+
+
