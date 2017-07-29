@@ -112,7 +112,8 @@ class Calc_p_alpha:
             # standard teleoprtation
             #func = (1. - cf.tau) * t + (cf.tau * 1. / n) * np.ones((n,n)) \
             #    + ((1. - cf.tau)) / n * np.tile(d,(n,1))
-            func = (1. - cf.tau) * t + (cf.tau * 1. / n) * np.eye(n)
+            func = (1. - cf.tau) * t
+            func += (cf.tau * 1. / n) * spa.eye(n)
             tile_base = (1. - cf.tau) / n * d
             for num in range(n):
               func[num] += tile_base
