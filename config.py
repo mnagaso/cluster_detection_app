@@ -20,7 +20,8 @@ import numpy as np
 #infile_path = 'data/fs_flow.csv'
 #infile_path = 'data/fs_sink.csv'
 #infile_path = 'data/n50_hie.csv'
-infile_path = 'data/80k.csv'
+#infile_path = 'data/80k.csv'
+infile_path = 'data/new_n800.csv'
 
 # node id-name list filename
 #vertices_file_path = 'data/debug_no_dangling_vertices.csv'
@@ -31,8 +32,8 @@ infile_path = 'data/80k.csv'
 #vertices_file_path = 'data/fs_flow_vertices.csv'
 #vertices_file_path = 'data/fs_sink_vertices.csv'
 #vertices_file_path = 'data/n50_hie_vertices.csv'
-vertices_file_path = 'data/80k_vertices.casv'
-
+#vertices_file_path = 'data/80k_vertices.casv'
+vertices_file_path = 'data/new_n800_vertices.casv'
 
 
 # total number of nodes in input data
@@ -44,7 +45,8 @@ vertices_file_path = 'data/80k_vertices.casv'
 #total_nodes = 48
 #total_nodes = 16
 #total_nodes = 50
-total_nodes = 80000
+#total_nodes = 80000
+total_nodes = 800
 
 infile_directed_type = 1 # 1 : directed, 2 : undirected
 
