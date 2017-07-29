@@ -115,8 +115,8 @@ class Calc_p_alpha:
             func = (1. - cf.tau) * t
             func += (cf.tau * 1. / n) * spa.eye(n)
             tile_base = (1. - cf.tau) / n * d
-            for num in range(n):
-              func[num] += tile_base
+            for row in range(n):
+              func[row] += tile_base
 
         elif cf.teleport_type == 2 or cf.teleport_type == 3:
             # smart recorded teleportation
@@ -126,15 +126,18 @@ class Calc_p_alpha:
             w_in_alpha = w.sum(axis=1)
             
             # prepare w_in matrix
-            w_in = np.zeros((n,n),dtype=cf.myfloat)
-            for col in range(n):
-                w_in[col,:] = w_in_alpha[col] 
+            #w_in = np.zeros(n,dtype=cf.myfloat)
+            #for col in range(n):
+            #    w_in[col] = w_in_alpha[col] 
     
             # get sum from all elements of w
             w_total = w_in_alpha.sum(axis=0)
-    
-            func = (1. - cf.tau) * t + cf.tau * 1. / w_total[0,0] * w_in \
-                 + (1. - cf.tau) * 1. / w_total[0,0] * np.einsum('ij,ij->ij',np.asmatrix(w_in_alpha), np.asmatrix(d))
+ 
+            func  = (1. - cf.tau) * t
+            add_base = cf.tau * 1. / w_total[0,0] * w_in_alpha
+            for col in range(n):
+                func[:,col] += cf.tau * 1. / w_total[0,0] * w_in_alpha
+            func += (1. - cf.tau) * 1. / w_total[0,0] * np.einsum('ij,ij->ij',np.asmatrix(w_in_alpha), np.asmatrix(d))
 
         else:
             print ("selected teleport_type in config.py is not implemented yet.")

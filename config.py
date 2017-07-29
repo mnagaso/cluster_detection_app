@@ -22,8 +22,8 @@ import numpy as np
 #infile_path = 'data/n50_hie.csv'
 #infile_path = 'data/80k.csv'
 #infile_path = 'data/new_n800.csv'
-infile_path = 'data/new_n8000.csv'
-#infile_path = 'data/new_n4000.csv'
+#infile_path = 'data/new_n8000.csv'
+infile_path = 'data/new_n4000.csv'
 #infile_path = 'data/new_n2000.csv'
 #infile_path = 'data/new_n20k.csv'
 #infile_path = 'data/new_n40k.csv'
@@ -41,8 +41,8 @@ infile_path = 'data/new_n8000.csv'
 #vertices_file_path = 'data/n50_hie_vertices.csv'
 #vertices_file_path = 'data/80k_vertices.csv'
 #vertices_file_path = 'data/new_n800_vertices.csv'
-vertices_file_path = 'data/new_n8000_vertices.csv'
-#vertices_file_path = 'data/new_n4000_vertices.csv'
+#vertices_file_path = 'data/new_n8000_vertices.csv'
+vertices_file_path = 'data/new_n4000_vertices.csv'
 #vertices_file_path = 'data/new_n2000_vertices.csv'
 #vertices_file_path = 'data/new_n20k_vertices.csv'
 #vertices_file_path = 'data/new_n40k_vertices.csv'
@@ -58,8 +58,8 @@ vertices_file_path = 'data/new_n8000_vertices.csv'
 #total_nodes = 50
 #total_nodes = 80000
 #total_nodes = 800
-total_nodes = 8000
-#total_nodes = 4000
+#total_nodes = 8000
+total_nodes = 4000
 #total_nodes = 2000
 #total_nodes = 20000
 #total_nodes = 40000
@@ -74,7 +74,7 @@ outfile_path = 'output_files/test_out.csv'
 p_conv_threshold = 1.0e-14
 
 # algorithm for calculation of p_alpha; 1 : power method, 2 : arnoldi method
-p_algo_type = 1
+p_algo_type = 2
 
 # type of equation for transient matrix; 1 : standard teleportation, 2 : smart recorded teleportation, 3 : smart unrecorded teleportation. (ref. lambiotte_2012)
 teleport_type = 1
