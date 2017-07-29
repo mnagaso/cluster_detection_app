@@ -22,7 +22,11 @@ import numpy as np
 #infile_path = 'data/n50_hie.csv'
 #infile_path = 'data/80k.csv'
 #infile_path = 'data/new_n800.csv'
-infile_path = 'data/new_n8000.csv'
+#infile_path = 'data/new_n8000.csv'
+#infile_path = 'data/new_n4000.csv'
+infile_path = 'data/new_n2000.csv'
+
+
 
 
 # node id-name list filename
@@ -36,7 +40,11 @@ infile_path = 'data/new_n8000.csv'
 #vertices_file_path = 'data/n50_hie_vertices.csv'
 #vertices_file_path = 'data/80k_vertices.casv'
 #vertices_file_path = 'data/new_n800_vertices.casv'
-vertices_file_path = 'data/new_n8000_vertices.casv'
+#vertices_file_path = 'data/new_n8000_vertices.casv'
+#vertices_file_path = 'data/new_n4000_vertices.casv'
+vertices_file_path = 'data/new_n2000_vertices.casv'
+
+
 
 
 
@@ -51,7 +59,11 @@ vertices_file_path = 'data/new_n8000_vertices.casv'
 #total_nodes = 50
 #total_nodes = 80000
 #total_nodes = 800
-total_nodes = 8000
+#total_nodes = 8000
+#total_nodes = 4000
+total_nodes = 2000
+
+
 
 
 infile_directed_type = 1 # 1 : directed, 2 : undirected
